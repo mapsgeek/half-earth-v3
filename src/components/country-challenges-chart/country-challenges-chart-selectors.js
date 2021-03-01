@@ -8,6 +8,14 @@ import {
   CHALLENGES_RELATED_FILTERS_OPTIONS,
 } from 'constants/country-mode-constants';
 
+const getBubleSize = (area) => {
+  if (area < 150) return 5;
+  if (area < 1500) return 15;
+  if (area < 22000) return 25;
+  if (area < 3250000) return 35;
+  if (area < 500000000) return 45;
+}
+
 const selectCountriesData = ({ countryData }) => (countryData && countryData.data) || null;
 
 const getCountryChallengesSelectedKey = (state, props) => props && props.countryChallengesSelectedKey;
@@ -20,6 +28,7 @@ const getScatterplotRawData = createSelector(
       const country = countriesData[key];
       return {
         continent: country.continent,
+        size: getBubleSize(country.AREA_KM2),
         name: country.NAME_0,
         color: CONTINENT_COLORS[country.continent] || '#fff',
         iso: country.GID_0,
