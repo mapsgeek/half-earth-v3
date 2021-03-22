@@ -39,24 +39,37 @@ const ScatterPlot = ({
   const minXValue = (data, selectedKey) => d3.min(data, (d) => d.xAxisValues[selectedKey])
   const maxXValue = (data, selectedKey) => d3.max(data, (d) => d.xAxisValues[selectedKey])
   const addBubblesToChart = (data, texture, appContainer) => data.map(d => {
+    //const bubble = new Bubble(data);
+    //appContainer.addChild(bubble);
+    //return bubble;
     const bubbleWrapper = new PIXI.Container();
     bubbleWrapper.y = chartScale.yScale(d.yAxisValue);
     bubbleWrapper.x = chartScale.xScale(d.xAxisValues[countryChallengesSelectedKey]);
     bubbleWrapper.slug = d.iso;
+    bubbleWrapper.attributes = d;
     const country = new PIXI.Sprite(texture);
+    const aura = new PIXI.Sprite(texture);
     country.attributes = d;
     country.anchor.set(0.5);
-    country.tint = PIXI.utils.string2hex(d.color);
+    country.tint = PIXI.utils.string2hex(d.theme.color);
     country.interactive = true;
     country.buttonMode = true;
-    country.blendMode = PIXI.BLEND_MODES.ADD;
-    const textStyle = new PIXI.TextStyle({fontFamily: 'Arial, sans', fontSize: 16, fill: '#000000'})
-    const countryIsoText = new PIXI.Text(d.iso, textStyle);
-    countryIsoText.anchor.set(0.5)
-    country.width = 0;
-    country.height = 0;
+    // country.blendMode = PIXI.BLEND_MODES.ADD;
+    console.log(d)
+    country.width = d.theme.size;
+    country.height = d.theme.size;
+    aura.width = d.theme.size + 4;
+    aura.height = d.theme.size + 4;
+    aura.tint = PIXI.utils.string2hex("#040E14");
+    aura.anchor.set(0.5);
+    bubbleWrapper.addChild(aura);
     bubbleWrapper.addChild(country);
-    bubbleWrapper.addChild(countryIsoText);
+    if (d.theme.label) {
+      const textStyle = new PIXI.TextStyle({fontFamily: 'Arial, sans', fontSize: 14, fill: '#000000'})
+      const countryIsoText = new PIXI.Text(d.theme.label, textStyle);
+      countryIsoText.anchor.set(0.5);
+      bubbleWrapper.addChild(countryIsoText);
+    }
     appContainer.addChild(bubbleWrapper);
     return bubbleWrapper;
   })
@@ -121,7 +134,7 @@ const ScatterPlot = ({
           .filter(bubble => persistentBubbles.includes(bubble.slug))
           .map((bubble, index) => {
             ease.add(bubble,
-              {x: chartScale.xScale(bubble.children[0].attributes.xAxisValues[countryChallengesSelectedKey])},
+              {x: chartScale.xScale(bubble.attributes.xAxisValues[countryChallengesSelectedKey])},
               {duration: 700, ease: 'easeInOutExpo', wait: index * 8}
             )
             return bubble
@@ -144,47 +157,47 @@ const ScatterPlot = ({
         bubblesArray.forEach((bubble) => {
           const { children } = bubble;
           const country = children[0];
-          country.removeAllListeners()
+          bubble.removeAllListeners()
           const isSelectedCountry = countryISO === bubble.slug;
-          if (isSelectedCountry) { bubble.zIndex = 1}
-          country.width = isSelectedCountry ? bigBubble : smallBubble;
-          country.height = isSelectedCountry ? bigBubble : smallBubble;
-          country.alpha = isSelectedCountry ? 1 : 0.6;
+          //if (isSelectedCountry) { bubble.zIndex = 1}
+          //country.width = isSelectedCountry ? bigBubble : smallBubble;
+          //country.height = isSelectedCountry ? bigBubble : smallBubble;
+          //country.alpha = isSelectedCountry ? 1 : 0.6;
 
-          country.on('pointerover', e => {
+          bubble.on('pointerover', e => {
             setTooltipState({
               x: e.data.global.x,
               y: e.data.global.y,
-              name: country.attributes.name,
-              continent: country.attributes.continent,
-              color: country.attributes.color,
-              yValue: Number.parseFloat(country.attributes.yAxisValue).toFixed(2),
+              name: bubble.attributes.name,
+              continent: bubble.attributes.continent,
+              color: bubble.attributes.color,
+              yValue: Number.parseFloat(bubble.attributes.yAxisValue).toFixed(2),
               yLabel: 'Species Protection Index',
-              xValue: filter => tooltipValuesFormats[filter](country.attributes.xAxisValues[filter]),
+              xValue: filter => tooltipValuesFormats[filter](bubble.attributes.xAxisValues[filter]),
               xLabel: filter => xAxisLabels[filter]
             })
-            if (!isSelectedCountry) {
-              ease.add(country, {
-                width: bigBubble,
-                height: bigBubble,
-              }, {duration: 150, ease: 'easeInOutExpo' });
-            }
+            // if (!isSelectedbubble) {
+            //   ease.add(bubble, {
+            //     width: bigBubble,
+            //     height: bigBubble,
+            //   }, {duration: 150, ease: 'easeInOutExpo' });
+            // }
           });
 
           // mouse leave
-          country.on('pointerout', e => {
+          bubble.on('pointerout', e => {
             setTooltipState(null)
-            if (!isSelectedCountry) {
-              ease.add(country, {
-                width: smallBubble,
-                height: smallBubble,
-              }, {duration: 150, ease: 'easeInOutExpo' });
-            }
+            // if (!isSelectedbubble) {
+            //   ease.add(bubble, {
+            //     width: smallBubble,
+            //     height: smallBubble,
+            //   }, {duration: 150, ease: 'easeInOutExpo' });
+            // }
           });
 
-          country.on('click', e => {
+          bubble.on('click', e => {
             if (!isSelectedCountry) {
-              onBubbleClick({ countryISO: country.attributes.iso, countryName: country.attributes.name })
+              onBubbleClick({ countryISO: bubble.attributes.iso, countryName: bubble.attributes.name })
             }
           })
         })

@@ -1,7 +1,7 @@
 import { createSelector, createStructuredSelector } from 'reselect';
 import { CONTINENT_COLORS } from 'constants/country-mode-constants';
 import { getCountryChallengesSelectedFilter, getCountryISO } from 'pages/data-globe/data-globe-selectors';
-import { countryChallengesChartFormats } from 'utils/data-formatting-utils';
+import { countryChallengesChartFormats, areaBubbleSize } from 'utils/data-formatting-utils';
 import * as d3 from 'd3';
 import {
   INDICATOR_LABELS,
@@ -18,11 +18,17 @@ const getScatterplotRawData = createSelector(
     if (!countriesData) return null;
     return Object.keys(countriesData).map((key) => {
       const country = countriesData[key];
+      console.log(country)
       return {
         continent: country.continent,
         name: country.NAME_0,
         color: CONTINENT_COLORS[country.continent] || '#fff',
         iso: country.GID_0,
+        theme: {
+          color: CONTINENT_COLORS[country.continent],
+          size: areaBubbleSize(country.AREA_KM2),
+          label: areaBubbleSize(country.AREA_KM2) > 20 && country.GID_0,
+        },
         xAxisValues: {
           Population2016: country.Population2016,
           GNI_PPP: country.GNI_PPP,

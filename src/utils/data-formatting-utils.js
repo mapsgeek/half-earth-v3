@@ -10,3 +10,11 @@ export const countryChallengesChartFormats = {
   total_endemic: value => localeFormatting(value),
   N_SPECIES: value => localeFormatting(value),
 }
+
+export const areaBubbleSize = area => {
+  if (area < 300) return 15; 
+  if (area < 1000) return 30; 
+  if (area < 22000) return 50; 
+  if (area < 3250000) return 70; 
+  return 90; 
+}
