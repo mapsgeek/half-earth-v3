@@ -1,4 +1,4 @@
-import { loadModules } from 'esri-loader';
+import {union} from "@arcgis/core/geometry/geometryEngine";
 import { isEqual, flattenDeep } from 'lodash';
 
 export const calculateAgregatedGridCellGeometry = (hasContainedGridCells, gridCells, geometryEngineModule) => {
@@ -16,14 +16,7 @@ export const cellsEquality = (ref, cells, hasContainedGridCells) => {
   return isEqual(refId, cellId);
 }
 
-export const calculateAggregatedCells = (features) => {
-  return loadModules(["esri/geometry/geometryEngine"])
-    .then(([geometryEngine]) => {
-      return geometryEngine.union(features.map(gc => gc.geometry));
-    }).catch(error => {
-      console.error(error);
-    })
-}
+export const calculateAggregatedCells = (features) => union(features.map(gc => gc.geometry));
 
 export const containedQuery = (layer, extent) => {
   const scaledDownExtent = extent.clone().expand(0.9);

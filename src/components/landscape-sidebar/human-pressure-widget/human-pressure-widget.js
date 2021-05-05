@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { loadModules } from 'esri-loader';
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import HumanPressureWidgetComponent from './human-pressure-widget-component';
 import mapStateToProps from './human-pressure-selectors';
 // this forces the registration of redux module and sagas
@@ -31,12 +31,10 @@ const HumanPressureWidgetContainer = props => {
   // Create the layer to query against
   useEffect(() => {
     if (!landPressuresLayer) {
-      loadModules(["esri/layers/FeatureLayer"]).then(([FeatureLayer]) => {
-        const landPressuresLayer = new FeatureLayer({
-          url: layersConfig[GRID_CELLS_LAND_HUMAN_PRESSURES_PERCENTAGE].url
-        });
-        setLandPressuresLayer(landPressuresLayer)
+      const landPressuresLayer = new FeatureLayer({
+        url: layersConfig[GRID_CELLS_LAND_HUMAN_PRESSURES_PERCENTAGE].url
       });
+      setLandPressuresLayer(landPressuresLayer)
     }
   }, []);
 

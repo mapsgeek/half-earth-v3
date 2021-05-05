@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { loadModules } from 'esri-loader';
+import labelClassConstructor from "@arcgis/core/layers/support/LabelClass";
 import { findLayerInMap } from 'utils/layer-manager-utils';
 import * as urlActions from 'actions/url-actions';
 import { LANDSCAPE_LABELS_LAYERS } from 'constants/layers-groups';
@@ -49,28 +49,25 @@ const LabelsLayer = props => {
   const [labelsLayers, setLabelsLayers] = useState(null);
   useEffect(() => {
     const styleLayers = (layers) => {
-      loadModules(["esri/layers/support/LabelClass"])
-      .then(([labelClassConstructor]) => {
-        const labelingInfo = labelsStylesSlugs.map(slug => labelClassFactory(labelClassConstructor, slug))
-        layers.forEach(layer => {
-          layer.opacity = 1;
-          layer.labelsVisible = true;
-          layer.labelingInfo = labelingInfo;
-          if (countryISO) {
-            layer.definitionExpression = `GID_0 = '${countryISO}'`
+    const labelingInfo = labelsStylesSlugs.map(slug => labelClassFactory(labelClassConstructor, slug))
+    layers.forEach(layer => {
+      layer.opacity = 1;
+      layer.labelsVisible = true;
+      layer.labelingInfo = labelingInfo;
+      if (countryISO) {
+        layer.definitionExpression = `GID_0 = '${countryISO}'`
+      }
+      if (layer.title === LANDSCAPE_FEATURES_LABELS_LAYER) {
+        // Hides the dots but keeps the landscape feature layers
+        layer.renderer = {
+          type: 'simple',
+          symbol: {
+            type: 'simple-marker',
+            size: 0
           }
-          if (layer.title === LANDSCAPE_FEATURES_LABELS_LAYER) {
-            // Hides the dots but keeps the landscape feature layers
-            layer.renderer = {
-              type: 'simple',
-              symbol: {
-                type: 'simple-marker',
-                size: 0
-              }
-            }
-          }
-        });
-      });
+        }
+      }
+    });
     };
 
     const layers = LANDSCAPE_LABELS_LAYERS.map(layer => findLayerInMap(layer, map)).filter(Boolean);

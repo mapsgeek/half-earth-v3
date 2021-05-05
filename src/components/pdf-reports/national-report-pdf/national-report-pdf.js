@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
-import { useWatchUtils } from 'hooks/esri';
+import { whenFalseOnce } from "@arcgis/core/core/watchUtils";
 import Component from './national-report-pdf-component';
 import { connect } from 'react-redux';
 import mapStateToProps from 'components/local-scene-sidebar/local-scene-sidebar-selectors';
@@ -8,16 +8,16 @@ import mapStateToProps from 'components/local-scene-sidebar/local-scene-sidebar-
 const NationalReportPdfContainer = (props) => {
   let watchHandle;
   const { view, countryISO } = props;
-  const watchUtils = useWatchUtils();
   const [sceneScreenshotUrl, setSceneScreenshotUrl] = useState();
-useEffect(() => {
-  watchHandle = watchUtils && watchUtils.whenFalseOnce(view, "updating", function(updating) {
-      getSceneImageUrl();
-  })
-  return function cleanUp() {
-    watchHandle && watchHandle.remove();
-  }
-},[watchUtils, countryISO]);
+
+  useEffect(() => {
+    watchHandle = whenFalseOnce(view, "updating", function() {
+        getSceneImageUrl();
+    })
+    return function cleanUp() {
+      watchHandle && watchHandle.remove();
+    }
+  },[countryISO]);
 
 const getSceneImageUrl = ()=> {
   const options = {

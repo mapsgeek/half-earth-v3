@@ -1,5 +1,5 @@
-import { loadModules } from 'esri-loader';
 import { esriGeometryToGeojson } from 'utils/geojson-parser';
+import { webMercatorToGeographic } from "@arcgis/core/geometry/support/webMercatorUtils";
 import { all, takeLatest, call, select, put, cancelled } from 'redux-saga/effects';
 import geoDescriberActions from './geo-description-actions';
 import axios from 'axios';
@@ -20,12 +20,9 @@ function* fetchGeodescriberData() {
   const state = yield select();
   const { gridCellData: { geometry} } = state;
   const cancelSource = axios.CancelToken.source()
-  yield loadModules(["esri/geometry/support/webMercatorUtils"])
-    .then(([webMercatorUtils]) => {
-      // create geoJson (needed for geodescriber request)
-      const geoGeometry = webMercatorUtils.webMercatorToGeographic(geometry);
-      geoJSON = esriGeometryToGeojson(geoGeometry);
-    }).catch((err) => console.error(err));
+  // create geoJson (needed for geodescriber request)
+  const geoGeometry = webMercatorToGeographic(geometry);
+  geoJSON = esriGeometryToGeojson(geoGeometry);
 
   try {
     yield put(SET_GEO_DESCRIPTION_LOADING());

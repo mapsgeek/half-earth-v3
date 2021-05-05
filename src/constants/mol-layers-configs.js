@@ -75,8 +75,7 @@ import { LAYERS_URLS } from 'constants/layers-urls';
 const LAYER_TYPES = {
   FEATURE_LAYER: 'FeatureLayer',
   TILE_LAYER: 'TileLayer',
-  VECTOR_TILE_LAYER: 'VectorTileLayer',
-  IMAGERY_LAYER: 'ImageryLayer'
+  VECTOR_TILE_LAYER: 'VectorTileLayer'
 }
 
 export const DEFAULT_OPACITY = 0.6;

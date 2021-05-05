@@ -1,7 +1,7 @@
-import { loadModules } from 'esri-loader';
 import React from 'react';
 import { MODALS } from 'constants/ui-params';
 import { connect } from 'react-redux';
+import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
 
 import MinimapWidgetComponent from './minimap-widget-component';
 import { minimapLayerStyles, synchronizeWebScenes } from 'utils/minimap-utils';
@@ -23,10 +23,9 @@ const MinimapWidget = (props) => {
 
   const handleMapLoad = (map, view, globeView ) => {
     map.ground.surfaceColor = '#0A212E';  // set surface color, before basemap is loaded
-    loadModules(["esri/layers/VectorTileLayer"]).then(([VectorTileLayer]) => { // load two-colors vector-tile-layer into minimap globe
-      const minimapLayer = new VectorTileLayer(minimapLayerStyles);
-      map.add(minimapLayer);
-    });
+    // load two-colors vector-tile-layer into minimap globe
+    const minimapLayer = new VectorTileLayer(minimapLayerStyles);
+    map.add(minimapLayer);
     synchronizeWebScenes(globeView, view); // synchronize data-globe position, zoom etc. with minimap-globe
   };
 

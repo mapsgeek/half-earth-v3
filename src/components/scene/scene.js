@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import { connect } from 'react-redux';
 import Component from './scene-component';
-import { loadModules } from 'esri-loader';
+import { whenTrue } from "@arcgis/core/core/watchUtils";
+import Map from "@arcgis/core/Map";
+import SceneView from "@arcgis/core/views/SceneView";
 import { SATELLITE_BASEMAP_LAYER } from 'constants/layers-slugs';
 import * as urlActions from 'actions/url-actions';
 
@@ -24,37 +26,21 @@ const SceneContainer = (props) => {
   const [loadState, setLoadState] = useState('loading');
 
   useEffect(() => {
-    loadModules([
-      "esri/Map",
-    ], loaderOptions)
-      .then(([Map]) => {
-
-        const _map = new Map({
-          basemap: SATELLITE_BASEMAP_LAYER,
-        });
-
-        setMap(_map);
-        onMapLoad && onMapLoad(_map);
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    const _map = new Map({
+      basemap: SATELLITE_BASEMAP_LAYER,
+    });
+    setMap(_map);
+    onMapLoad && onMapLoad(_map);
   }, [])
 
   useEffect(() => {
     if (map) {
-      loadModules(["esri/views/SceneView"], loaderOptions)
-        .then(([SceneView]) => {
-          const _view = new SceneView({
-            map: map,
-            container: `scene-container-${sceneName || sceneId}`,
-            ...sceneSettings
-          });
-          setView(_view);
-        })
-        .catch(err => {
-          console.error(err);
-        });
+      const _view = new SceneView({
+        map: map,
+        container: `scene-container-${sceneName || sceneId}`,
+        ...sceneSettings
+      });
+      setView(_view);
     }
   },[map])
 
@@ -69,13 +55,10 @@ const SceneContainer = (props) => {
   useEffect(() => {
     let watchHandle;
     if (view && view.center && !urlParamsUpdateDisabled) {
-      loadModules(["esri/core/watchUtils"]).then(([watchUtils]) => {
-        watchHandle = watchUtils.whenTrue(view, "stationary", function() {
-          const { longitude, latitude } = view.center;
-          changeGlobe({ center: [longitude, latitude], zoom: view.zoom });
-        });
-
-      })
+      watchHandle = whenTrue(view, "stationary", function() {
+        const { longitude, latitude } = view.center;
+        changeGlobe({ center: [longitude, latitude], zoom: view.zoom });
+      });
     }
 
     return function cleanUp() {

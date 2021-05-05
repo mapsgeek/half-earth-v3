@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { loadModules } from 'esri-loader';
+import Graphic from "@arcgis/core/Graphic";
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import { connect } from 'react-redux';
 import debounce from 'lodash/debounce';
 // CONSTANTS
@@ -23,14 +24,12 @@ const { view, changeGlobe, countryISO, isLandscapeMode } = props;
 
   //Create the graphics layer on mount
   useEffect(() => {
-    loadModules(["esri/Graphic","esri/layers/GraphicsLayer"]).then(([Graphic, GraphicsLayer]) => {
-        const _selectedCountryBorderGraphic = createGraphic(Graphic, GRID_CELL_STYLES);
-        const _hoveredCountryBorderGraphic = createGraphic(Graphic, GRID_CELL_STYLES);
-        const graphicsLayer = createGraphicLayer(GraphicsLayer, [_selectedCountryBorderGraphic, _hoveredCountryBorderGraphic], GRAPHIC_LAYER);
-        setSelectedCountryGraphic(_selectedCountryBorderGraphic);
-        setHoveredCountryGraphic(_hoveredCountryBorderGraphic);
-        view.map.add(graphicsLayer);
-      })
+    const _selectedCountryBorderGraphic = createGraphic(Graphic, GRID_CELL_STYLES);
+    const _hoveredCountryBorderGraphic = createGraphic(Graphic, GRID_CELL_STYLES);
+    const graphicsLayer = createGraphicLayer(GraphicsLayer, [_selectedCountryBorderGraphic, _hoveredCountryBorderGraphic], GRAPHIC_LAYER);
+    setSelectedCountryGraphic(_selectedCountryBorderGraphic);
+    setHoveredCountryGraphic(_hoveredCountryBorderGraphic);
+    view.map.add(graphicsLayer);
   }, [])
 
   useEffect(() => {

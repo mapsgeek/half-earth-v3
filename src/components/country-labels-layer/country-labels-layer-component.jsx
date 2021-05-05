@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { loadModules } from 'esri-loader';
+import LabelClass from "@arcgis/core/layers/support/LabelClass";
 import {
   findLayerInMap,
   addLayerToActiveLayers
@@ -13,26 +13,23 @@ const CountryLabelsLayerComponent = props => {
   const [countryLabelsLayer, setCountryLabelsLayer] = useState(null)
 
   useEffect(() => {
-    loadModules(["esri/layers/support/LabelClass"])
-    .then(([LabelClass]) => {
-      const _labelingInfo = new LabelClass({
-        labelExpressionInfo: {
-          expression: "$feature.NAME_0"
+    const _labelingInfo = new LabelClass({
+      labelExpressionInfo: {
+        expression: "$feature.NAME_0"
+      },
+      symbol: {
+        type: "text",
+        color: [213,207,202],
+        font: {
+          family: "Helvetica",
+          size: 10,
+          weight: "normal"
         },
-        symbol: {
-          type: "text",
-          color: [213,207,202],
-          font: {
-            family: "Helvetica",
-            size: 10,
-            weight: "normal"
-          },
-          haloColor: [0, 0, 0, 255],
-          haloSize: 1
-        }
-      });
-      setLabelingInfo(_labelingInfo);
-    })
+        haloColor: [0, 0, 0, 255],
+        haloSize: 1
+      }
+    });
+    setLabelingInfo(_labelingInfo);
   }, [countryName]);
 
   useEffect(() => {

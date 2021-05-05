@@ -1,28 +1,17 @@
-import { loadModules } from 'esri-loader';
 import { useState, useEffect } from 'react';
 import { LAYERS_URLS } from 'constants/layers-urls';
-
-// Load watchUtils module to follow esri map changes
-export const useWatchUtils = () => {
-  const [watchUtils, setWatchUtils] = useState(null);
-  useEffect(() => {
-    loadModules(["esri/core/watchUtils"]).then(([watchUtils]) => {
-      setWatchUtils(watchUtils);
-    })
-  }, []);
-  return watchUtils;
-}
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import Search from "@arcgis/core/widgets/Search";
+import Locator from "@arcgis/core/tasks/Locator";
 
 export const useFeatureLayer = ({layerSlug, outFields = ["*"]}) => {
   const [layer, setLayer] = useState(null);
   useEffect(() => {
-    loadModules(["esri/layers/FeatureLayer"]).then(([FeatureLayer]) => {
-      const _layer = new FeatureLayer({
-        url: LAYERS_URLS[layerSlug],
-        outFields
-      });
-      setLayer(_layer)
+    const _layer = new FeatureLayer({
+      url: LAYERS_URLS[layerSlug],
+      outFields
     });
+    setLayer(_layer)
   }, [])
   return layer;
 }
@@ -42,19 +31,17 @@ export const useSearchWidgetLogic = (view, openPlacesSearchAnalyticsEvent, searc
       setSearchWidget(undefined); // reset search widget in case of multiple quick clicks
       const container = document.createElement("div");
       container.setAttribute("id", "searchWidget");
-      loadModules(["esri/widgets/Search", "esri/layers/FeatureLayer", "esri/tasks/Locator"]).then(([Search, FeatureLayer, Locator]) => {
-        const sWidget = new Search({
-          view: view,
-          locationEnabled: true, // do not show the Use current location box when clicking in the input field
-          popupEnabled: false, // hide location popup
-          resultGraphicEnabled: false, // hide location pin
-          container,
-          sources: searchSources(FeatureLayer, Locator),
-          includeDefaultSources: false
-        });
-        setSearchWidget(sWidget);
-        openPlacesSearchAnalyticsEvent();
-      }).catch((err) => console.error(err));
+      const sWidget = new Search({
+        view: view,
+        locationEnabled: true, // do not show the Use current location box when clicking in the input field
+        popupEnabled: false, // hide location popup
+        resultGraphicEnabled: false, // hide location pin
+        container,
+        sources: searchSources(FeatureLayer, Locator),
+        includeDefaultSources: false
+      });
+      setSearchWidget(sWidget);
+      openPlacesSearchAnalyticsEvent();
     }
   };
 

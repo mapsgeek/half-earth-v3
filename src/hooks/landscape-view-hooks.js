@@ -1,5 +1,5 @@
-import { loadModules } from 'esri-loader';
 import { useEffect, useRef } from 'react';
+import { whenTrue } from "@arcgis/core/core/watchUtils";
 import {
   isLandscapeViewOnEvent,
   isLandscapeViewOffEvent
@@ -9,16 +9,14 @@ import {
     const landscapeModeRef = useRef(false);
     useEffect(() => {
       let watcher;
-      loadModules(["esri/core/watchUtils"]).then(([watchUtils]) => {
-        watcher = watchUtils.whenTrue(view, "stationary", function() {
-          if (isLandscapeViewOnEvent(view.zoom, zoomLevelTrigger, landscapeModeRef.current, countryISO)) {
-            onZoomChange({ landscapeView: true })
-            landscapeModeRef.current = true;
-          } else if (isLandscapeViewOffEvent(view.zoom, zoomLevelTrigger, landscapeModeRef.current, countryISO)) {
-            onZoomChange({ landscapeView: false })
-            landscapeModeRef.current = false;
-          }
-        })
+      watcher = whenTrue(view, "stationary", function() {
+        if (isLandscapeViewOnEvent(view.zoom, zoomLevelTrigger, landscapeModeRef.current, countryISO)) {
+          onZoomChange({ landscapeView: true })
+          landscapeModeRef.current = true;
+        } else if (isLandscapeViewOffEvent(view.zoom, zoomLevelTrigger, landscapeModeRef.current, countryISO)) {
+          onZoomChange({ landscapeView: false })
+          landscapeModeRef.current = false;
+        }
       })
       return function cleanUp() {
         watcher && watcher.remove();

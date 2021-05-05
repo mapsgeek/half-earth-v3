@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { loadModules } from 'esri-loader';
+import Popup from "@arcgis/core/widgets/Popup";
 import { ReactComponent as CloseIcon } from 'icons/close.svg';
 import styles from './country-entry-tooltip-styles.module.scss';
 
@@ -15,11 +15,8 @@ const [tooltip, setTooltip] = useState(null);
 
 // Create a new Popup to contain the tooltip
 useEffect(() => {
-  loadModules(["esri/widgets/Popup"])
-  .then(([Popup]) => {
-    const _tooltip = new Popup({view});
-    setTooltip(_tooltip);
-  })
+  const _tooltip = new Popup({view});
+  setTooltip(_tooltip);
 }, [])
 
 useEffect(() => {

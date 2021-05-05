@@ -1,6 +1,10 @@
+import Basemap from "@arcgis/core/Basemap";
+import TileLayer from  "@arcgis/core/layers/TileLayer";
+import FeatureLayer from  "@arcgis/core/layers/FeatureLayer";
+import VectorTileLayer from  "@arcgis/core/layers/VectorTileLayer";
+import WebTileLayer from  "@arcgis/core/layers/WebTileLayer";
 import { LEGEND_FREE_LAYERS } from 'constants/layers-groups';
 import intersection from 'lodash/intersection';
-import { loadModules } from 'esri-loader';
 import { addLayerAnalyticsEvent, removeLayerAnalyticsEvent } from 'actions/google-analytics-actions';
 import { DEFAULT_OPACITY, LAYERS_CATEGORIES, layersConfig} from 'constants/mol-layers-configs';
 
@@ -114,18 +118,25 @@ export const layerManagerOrder = (legendLayers, activeLayers, callback) => {
   callback({ activeLayers: updatedLayers });
 };
 
+const instantiateLayer = (layerConstructor, layerConfig) => new layerConstructor({
+  url: layerConfig.url,
+  urlTemplate: layerConfig.url,
+  title: layerConfig.slug,
+  id: layerConfig.slug,
+  opacity: layerConfig.opacity || DEFAULT_OPACITY
+})
+
 export const createLayer = layerConfig => {
-  const { url, slug, type, opacity } = layerConfig;
-  const layerType = type || 'WebTileLayer';
-  return loadModules([`esri/layers/${layerType}`]).then(([layer]) => {
-    return new layer({
-      url: url,
-      urlTemplate: url,
-      title: slug,
-      id: slug,
-      opacity: opacity || DEFAULT_OPACITY
-    })
-  });
+  switch (layerConfig.type) {
+    case 'FeatureLayer':
+      return instantiateLayer(FeatureLayer, layerConfig);
+    case 'TileLayer':
+      return instantiateLayer(TileLayer, layerConfig);
+    case 'VectorTileLayer':
+      return instantiateLayer(VectorTileLayer, layerConfig);
+    default:
+      return instantiateLayer(WebTileLayer, layerConfig);
+  }
 }
 export const addLayerToMap = (mapLayer, map) => new Promise((resolve, reject) => {
   map.add(mapLayer);
@@ -165,14 +176,12 @@ export const addActiveLayersToScene = (activeLayers, layersConfig, map) => {
 export const setBasemap = async ({map, surfaceColor, layersArray}) => {
   map.ground.surfaceColor = surfaceColor || '#0A212E'; // set surface color, before basemap is loaded
   const baseLayers = await Promise.all(layersArray.map(async layer => await createLayer(layersConfig[layer])));
-  loadModules(["esri/Basemap"]).then(([Basemap]) => {
-    const basemap = new Basemap({
-      baseLayers,
-      title: "half-earth-basemap",
-      id: "half-earth-basemap"
-    });
-    map.basemap = basemap;
-  })
+  const basemap = new Basemap({
+    baseLayers,
+    title: "half-earth-basemap",
+    id: "half-earth-basemap"
+  });
+  map.basemap = basemap;
 }
 
 export const getActiveLayersFromLayerGroup = (layerGroup, activeLayers) => (

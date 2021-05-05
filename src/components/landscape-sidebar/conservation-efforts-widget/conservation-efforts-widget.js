@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { loadModules } from 'esri-loader';
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import conservationEffortsActions from 'redux_modules/conservation-efforts';
 
 import { addLayerAnalyticsEvent, removeLayerAnalyticsEvent } from 'actions/google-analytics-actions';
@@ -31,12 +31,10 @@ const ConservationEffortsWidget = (props) => {
 
   useEffect(() => {
     if (!conservationPropsLayer) {
-      loadModules(["esri/layers/FeatureLayer"]).then(([FeatureLayer]) => {
-        const consPropLayer = new FeatureLayer({
-          url: layersConfig[GRID_CELLS_PROTECTED_AREAS_PERCENTAGE].url
-        });
-        setConservationPropsLayer(consPropLayer);
+      const consPropLayer = new FeatureLayer({
+        url: layersConfig[GRID_CELLS_PROTECTED_AREAS_PERCENTAGE].url
       });
+      setConservationPropsLayer(consPropLayer);
     }
   }, []);
 

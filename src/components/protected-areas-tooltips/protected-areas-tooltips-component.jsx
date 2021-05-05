@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { loadModules } from 'esri-loader';
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import Query from "@arcgis/core/tasks/support/Query";
 
 import {
   PROTECTED_AREAS_FEATURE_LAYER,
@@ -37,24 +38,20 @@ const ProtectedAreasTooltips = ({ view, isLandscapeMode, activeLayers }) => {
   // fetch Protected Areas Feature Layer
   useEffect(() => {
     if (isLandscapeMode && isProtectedAreasRendered && !protectedAreasFL) {
-      loadModules(["esri/layers/FeatureLayer"]).then(([FeatureLayer]) => {
-        const protectedAreasFL = new FeatureLayer({
-          url: layersConfig[PROTECTED_AREAS_FEATURE_LAYER].url
-        });
-        setProtectedAreasFL(protectedAreasFL)
+      const protectedAreasFL = new FeatureLayer({
+        url: layersConfig[PROTECTED_AREAS_FEATURE_LAYER].url
       });
+      setProtectedAreasFL(protectedAreasFL)
     }
   }, [isProtectedAreasRendered, isLandscapeMode]);
 
   // fetch Community Areas Feature Layer
   useEffect(() => {
     if (isLandscapeMode && isCommunityAreasRendered && !communityAreasFL) {
-      loadModules(["esri/layers/FeatureLayer"]).then(([FeatureLayer]) => {
-        const communityAreasFL = new FeatureLayer({
-          url: layersConfig[COMMUNITY_AREAS_FEATURE_LAYER].url
-        });
-        setCommunityAreasFL(communityAreasFL)
+      const communityAreasFL = new FeatureLayer({
+        url: layersConfig[COMMUNITY_AREAS_FEATURE_LAYER].url
       });
+      setCommunityAreasFL(communityAreasFL)
     }
   }, [isCommunityAreasRendered, isLandscapeMode]);
 
@@ -64,29 +61,27 @@ const ProtectedAreasTooltips = ({ view, isLandscapeMode, activeLayers }) => {
     const protectedAreaReady = isProtectedAreasRendered && protectedAreasFL;
     const communityAreaReady = isCommunityAreasRendered && communityAreasFL;
 
-    loadModules(["esri/tasks/support/Query"]).then(([Query]) => {
-      const query = new Query({
-        geometry: _point,
-        spatialRelationship: 'intersects',
-        returnGeometry: false,
-        outFields: ["NAME", "REP_AREA"]
-      });
+    const query = new Query({
+      geometry: _point,
+      spatialRelationship: 'intersects',
+      returnGeometry: false,
+      outFields: ["NAME", "REP_AREA"]
+    });
 
-      if (protectedAreaReady && communityAreaReady) {
-        communityAreasFL.queryFeatures(query).then((results) => {
-          const { features } = results;
-          if (features.length) {
-            displayTooltip(_point, features[0].attributes, COMMUNITY_AREA_COLOR);
-          } else {
-            queryAreas(PROTECTED, query, _point);
-          }
-        })
-      } else if (communityAreaReady && !isProtectedAreasRendered) {
-        queryAreas(COMMUNITY, query, _point);
-      } else if (protectedAreaReady && !isCommunityAreasRendered) {
-        queryAreas(PROTECTED, query, _point);
-      }
-    })
+    if (protectedAreaReady && communityAreaReady) {
+      communityAreasFL.queryFeatures(query).then((results) => {
+        const { features } = results;
+        if (features.length) {
+          displayTooltip(_point, features[0].attributes, COMMUNITY_AREA_COLOR);
+        } else {
+          queryAreas(PROTECTED, query, _point);
+        }
+      })
+    } else if (communityAreaReady && !isProtectedAreasRendered) {
+      queryAreas(COMMUNITY, query, _point);
+    } else if (protectedAreaReady && !isCommunityAreasRendered) {
+      queryAreas(PROTECTED, query, _point);
+    }
   }
 
   const queryAreas = (type, query, point) => {

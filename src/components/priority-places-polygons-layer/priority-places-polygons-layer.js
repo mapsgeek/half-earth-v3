@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { loadModules } from 'esri-loader';
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import FeatureLayer from  "@arcgis/core/layers/FeatureLayer";
+import Graphic from "@arcgis/core/Graphic";
 import { PRIORITY_PLACES_POLYGONS, PRIORITY_POLYGONS_GRAPHIC_LAYER } from 'constants/layers-slugs';
 import { layersConfig } from 'constants/mol-layers-configs';
 
@@ -16,18 +18,13 @@ const PriorityPlacesPolygonsLayer = ({ view, selectedFeaturedMap, selectedTaxa }
   const [ polygons, setPolygons ] = useState(priorityPolygonsInitialState);
 
   useEffect(() => {
-    loadModules(
-      [
-        "esri/layers/GraphicsLayer"
-      ]).then(([GraphicsLayer]) => {
-        const _graphicsLayer = new GraphicsLayer({
-          id: PRIORITY_POLYGONS_GRAPHIC_LAYER,
-          title: PRIORITY_POLYGONS_GRAPHIC_LAYER,
-          graphics: []
-        });
-        view.map.add(_graphicsLayer);
-        setGraphicsLayer(_graphicsLayer);
-      })
+    const _graphicsLayer = new GraphicsLayer({
+      id: PRIORITY_POLYGONS_GRAPHIC_LAYER,
+      title: PRIORITY_POLYGONS_GRAPHIC_LAYER,
+      graphics: []
+    });
+    view.map.add(_graphicsLayer);
+    setGraphicsLayer(_graphicsLayer);
   }, [])
 
   // Create layer from the service to query it later
@@ -35,14 +32,12 @@ const PriorityPlacesPolygonsLayer = ({ view, selectedFeaturedMap, selectedTaxa }
     if (selectedFeaturedMap === 'priorPlaces') {
       if (!priorityPolygonsLayer) {
         const layerConfig = layersConfig[PRIORITY_PLACES_POLYGONS];
-        loadModules([`esri/layers/${layerConfig.type}`])
-          .then(([LayerConstructor]) => {
-            const layer = new LayerConstructor({
-              url: `${layerConfig.url}`,
-              title: layerConfig.title
-            });
-            setPriorityPolygonsLayer(layer);
-          })
+        const { url, title } = layerConfig;
+        const layer = new FeatureLayer({
+          url,
+          title
+        });
+        setPriorityPolygonsLayer(layer);
       }
     }
   }, [selectedFeaturedMap])
@@ -79,10 +74,7 @@ const PriorityPlacesPolygonsLayer = ({ view, selectedFeaturedMap, selectedTaxa }
   }
   
   const createGraphicsArray = (features, taxa) => {
-    return loadModules(["esri/Graphic"])
-      .then(([Graphic]) => {
-        return features.map(feature => createGraphic(feature, Graphic));
-      })
+    return features.map(feature => createGraphic(feature, Graphic));  
   }
 
   const createGraphic = (feature, Graphic) => {

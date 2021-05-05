@@ -1,7 +1,9 @@
-import { loadModules } from 'esri-loader';
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import Graphic from "@arcgis/core/Graphic";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { isEqual } from 'lodash';
 import { useState, useEffect, useRef } from 'react';
-import { useWatchUtils } from 'hooks/esri';
+import { whenTrue } from "@arcgis/core/core/watchUtils";
 import { GRID_URL } from 'constants/layers-urls';
 import { GRAPHIC_LAYER } from 'constants/layers-slugs';
 import { GRID_CELL_STYLES } from 'constants/graphic-styles';
@@ -24,7 +26,6 @@ const GridLayer = ({ view, setGridCellData, setGridCellGeometry }) => {
   let watchHandle;
   let watchUpdateHandle;
 
-  const watchUtils = useWatchUtils();
   const [viewExtent, setViewExtent] = useState();
   const [gridLayer, setGridLayer] = useState(null);
   const [aggregatedCells, setAggregatedCells] = useState(null);
@@ -40,36 +41,28 @@ const GridLayer = ({ view, setGridCellData, setGridCellGeometry }) => {
 
   //Create the graphics layer on mount
   useEffect(() => {
-    loadModules(
-      [
-        "esri/Graphic",
-        "esri/layers/GraphicsLayer"
-      ]).then(([Graphic, GraphicsLayer]) => {
-        const _gridCellGraphic = createGraphic(Graphic, GRID_CELL_STYLES);
-        const graphicsLayer = createGraphicLayer(GraphicsLayer, [_gridCellGraphic], GRAPHIC_LAYER);
-        setGridCellGraphic(_gridCellGraphic);
-        view.map.add(graphicsLayer);
-      })
+    const _gridCellGraphic = createGraphic(Graphic, GRID_CELL_STYLES);
+    const graphicsLayer = createGraphicLayer(GraphicsLayer, [_gridCellGraphic], GRAPHIC_LAYER);
+    setGridCellGraphic(_gridCellGraphic);
+    view.map.add(graphicsLayer);
   }, []);
 
   useEffect(() => {
-    loadModules(['esri/layers/FeatureLayer']).then(([FeatureLayer]) => {
-      const grid = new FeatureLayer({
-        url: GRID_URL
-      });
-      setGridLayer(grid);
-    })
+    const grid = new FeatureLayer({
+      url: GRID_URL
+    });
+    setGridLayer(grid);
   }, []);
 
   // set the view extent when view stationary
   useEffect(() => {
-    watchHandle = watchUtils && watchUtils.whenTrue(view, "stationary", function() {
+    watchHandle = whenTrue(view, "stationary", function() {
       setViewExtent(view.extent);
     })
     return function cleanUp() {
       watchHandle && watchHandle.remove();
     }
-  },[watchUtils]);
+  },[]);
 
 
   useEffect(() => {

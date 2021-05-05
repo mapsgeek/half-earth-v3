@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { loadModules } from 'esri-loader';
+import Extent from "@arcgis/core/geometry/Extent";
 import { layersConfig, LAYERS_CATEGORIES } from 'constants/mol-layers-configs';
 import {
   layerManagerToggle,
@@ -16,7 +16,6 @@ const actions = { addLayerAnalyticsEvent, removeLayerAnalyticsEvent, ...urlActio
 const BiodiversityLayerContainer = props => {
   const flyToLayerExtent = bbox => {
     const { view } = props;
-    loadModules(["esri/geometry/Extent"]).then(([Extent]) => {
       const [xmin, ymin, xmax, ymax] = bbox;
       const target = new Extent({
         xmin, xmax, ymin, ymax
@@ -28,7 +27,6 @@ const BiodiversityLayerContainer = props => {
             console.error(error);
           }
         });
-    })
   }
 
   const handleSimpleLayerToggle = (layerName, isSelected) => {

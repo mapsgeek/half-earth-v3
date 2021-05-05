@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { loadModules } from 'esri-loader';
+import { addFrameTask } from "@arcgis/core/core/scheduling";
 import { layersConfig } from 'constants/mol-layers-configs';
 import { hitResults, setAvatarImage, removeAvatarImage, setSelectedFeaturedPlace, setCursor } from 'utils/globe-events-utils';
 import { layerManagerToggle, activateLayersOnLoad, setBasemap } from 'utils/layer-manager-utils';
@@ -51,16 +51,14 @@ const featuredGlobeContainer = props => {
   }
 
   const spinGlobe = (view) => {
-    loadModules(["esri/core/scheduling"]).then(([scheduling]) => {
-      const camera = view.camera.clone();
-      const spinningGlobe = scheduling.addFrameTask({
-        update: function() {
-          camera.position.longitude -= 0.2;
-          view.camera = camera;
-        }
-      });
-      setHandle(spinningGlobe);
+    const camera = view.camera.clone();
+    const spinningGlobe = addFrameTask({
+      update: function() {
+        camera.position.longitude -= 0.2;
+        view.camera = camera;
+      }
     });
+    setHandle(spinningGlobe);
   }
 
   const handleGlobeUpdating = (updating) => props.changeGlobe({ isGlobeUpdating: updating });

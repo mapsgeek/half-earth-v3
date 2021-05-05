@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { loadModules } from 'esri-loader';
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import { difference } from "@arcgis/core/geometry/geometryEngine";
+import Graphic from "@arcgis/core/Graphic";
 import { COUNTRY_MASK_LAYER } from 'constants/layers-slugs';
 import { MASK_STYLES } from 'constants/graphic-styles';
 import { createGraphic, createGraphicLayer } from 'utils/graphic-layer-utils';
@@ -13,11 +15,9 @@ const CountryMaskLayer = props => {
 
   // Create graphic layer to store the mask
   useEffect(() => {
-    loadModules(["esri/layers/GraphicsLayer"]).then(([GraphicsLayer]) => {
-        const _graphicsLayer = createGraphicLayer(GraphicsLayer, [], COUNTRY_MASK_LAYER);
-        setGraphicsLayer(_graphicsLayer);
-        view.map.layers.add(_graphicsLayer);
-      })
+    const _graphicsLayer = createGraphicLayer(GraphicsLayer, [], COUNTRY_MASK_LAYER);
+    setGraphicsLayer(_graphicsLayer);
+    view.map.layers.add(_graphicsLayer);
   }, []);
 
   useEffect(() => {
@@ -25,13 +25,11 @@ const CountryMaskLayer = props => {
       if (countryMask) {
         graphicsLayer.graphics = [countryMask];
       } else {
-        loadModules(["esri/Graphic", "esri/geometry/geometryEngine"]).then(async ([Graphic, geometryEngine]) => {
-          const expandedExtent = countryBorder.extent.clone().expand(1.1)
-          const maskGeometry = await geometryEngine.difference(expandedExtent, countryBorder);
-          const maskGraphic = createGraphic(Graphic, MASK_STYLES, maskGeometry);
-          graphicsLayer.graphics = [maskGraphic];
-          setCountryMaskReady({ iso: countryISO, mask: maskGraphic })
-        });
+        const expandedExtent = countryBorder.extent.clone().expand(1.1)
+        const maskGeometry = difference(expandedExtent, countryBorder);
+        const maskGraphic = createGraphic(Graphic, MASK_STYLES, maskGeometry);
+        graphicsLayer.graphics = [maskGraphic];
+        setCountryMaskReady({ iso: countryISO, mask: maskGraphic })
       }
     }
   }, [graphicsLayer, countryBorder]);
