@@ -1,8 +1,6 @@
 {
-  "name": "half-earth-2019",
-  "version": "0.1.0",
-  "private": true,
-  "homepage": ".",
+  "name": "half-earth",
+  "version": "3",
   "dependencies": {
     "@loadable/component": "^5.10.1",
     "airtable": "^0.8.1",
