@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { loadModules } from 'esri-loader';
 
-const exaggeratedElevationLayerComponent = ({ map, exaggeration = 2}) => {
+const ExaggeratedElevationLayerComponent = ({ map, exaggeration = 2}) => {
 
   useEffect(() => {
     loadModules(["esri/layers/ElevationLayer", "esri/layers/BaseElevationLayer"]).then(([ElevationLayer, BaseElevationLayer]) => {
@@ -45,4 +45,4 @@ const exaggeratedElevationLayerComponent = ({ map, exaggeration = 2}) => {
   return null
 };
 
-export default exaggeratedElevationLayerComponent;
+export default ExaggeratedElevationLayerComponent;
