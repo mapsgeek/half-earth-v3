@@ -2,6 +2,15 @@
   "name": "half-earth-2019",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "react-app-rewired start",
+    "clean-cra-sw": "rm -f build/precache-manifest.*.js && rm -f build/service-worker.js",
+    "build-service-worker": "node ./src/service-worker-build.js",
+    "build": "react-app-rewired build && npm run build-service-worker && npm run clean-cra-sw",
+    "cypress:open": "cypress open",
+    "docs:serve": "bundle exec jekyll serve",
+    "eject": "react-scripts eject"
+  },
   "dependencies": {
     "@loadable/component": "^5.10.1",
     "airtable": "^0.8.1",
@@ -16,6 +25,7 @@
     "lodash-es": "4.17.14",
     "node-sass": "5.0.0",
     "post-robot": "8.0.28",
+    "prettier": "^2.3.2",
     "prop-types": "^15.7.2",
     "qs": "^6.7.0",
     "react": "^16.8.6",
@@ -29,7 +39,6 @@
     "react-redux": "^6.0.1",
     "react-responsive": "^8.0.1",
     "react-scripts": "4.0.3",
-    "react-spring": "^8.0.27",
     "react-tippy": "^1.4.0",
     "react-tooltip": "^3.10.0",
     "react-universal-component": "^4.0.0",
@@ -48,24 +57,6 @@
     "vizzuality-components": "^1.1.1",
     "workbox-build": "^4.3.1"
   },
-  "scripts": {
-    "start": "react-app-rewired start",
-    "clean-cra-sw": "rm -f build/precache-manifest.*.js && rm -f build/service-worker.js",
-    "build-service-worker": "node ./src/service-worker-build.js",
-    "build": "react-app-rewired build && npm run build-service-worker && npm run clean-cra-sw",
-    "cypress:open": "cypress open",
-    "docs:serve": "bundle exec jekyll serve",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "devDependencies": {
     "@babel/preset-env": "^7.5.3",
     "@babel/preset-react": "^7.0.0",
@@ -73,9 +64,34 @@
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "cypress": "^6.3.0",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb": "18.2.1",
+    "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-cypress": "^2.11.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "husky": "^7.0.0",
     "identity-obj-proxy": "^3.0.0",
+    "lint-staged": "^11.0.0",
     "npm-run-all": "^4.1.5",
     "react-app-rewired": "^2.1.1"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix"
+    ]
   }
 }
