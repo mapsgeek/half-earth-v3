@@ -22,7 +22,7 @@ import featuredMapsActions from 'redux_modules/featured-maps-list';
 
 const actions = { ...featuredMapsActions, ...urlActions}
 
-const featuredGlobeContainer = props => {
+const FeaturedGlobeContainer = props => {
   const [handle, setHandle] = useState(null);
   const isOnMobile = useMobile();
   const { changeUI, changeGlobe, featuredMapPlaces, selectedFeaturedMap, isFeaturedPlaceCard, isFullscreenActive } = props;
@@ -105,4 +105,4 @@ const featuredGlobeContainer = props => {
   )
 }
 
-export default connect(mapStateToProps, actions)(featuredGlobeContainer);
+export default connect(mapStateToProps, actions)(FeaturedGlobeContainer);

@@ -53,7 +53,7 @@ const CountrySceneComponent = ({
   isLandscapeSidebarCollapsed
 }) => {
 
-  const sidebarHidden =  isLandscapeMode || isFullscreenActive || useMobile();
+  const sidebarHidden = useMobile() || isLandscapeMode || isFullscreenActive;
   return (
     <>
       <Scene
