@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import {connect} from 'react-redux'; 
+import React from 'react';
+import { connect } from 'react-redux';
 import { hot } from 'react-hot-loader';
 import FeaturedGlobe from 'pages/featured-globe';
 import DataGlobe from 'pages/data-globe';
@@ -11,13 +11,13 @@ import 'he-components/dist/main.css';
 import 'vizzuality-components/dist/legend.css';
 
 const mapStateToProps = ({ location }) => ({
-  route: location.routesMap[location.type]
+  route: location.routesMap[location.type],
 });
 
 const AppLayout = (props) => {
   const { route } = props;
   const { page } = route;
-  switch(page){
+  switch (page) {
     case 'featured-globe':
       return <FeaturedGlobe />;
     case 'nrc':
@@ -25,19 +25,15 @@ const AppLayout = (props) => {
     case 'map-iframe':
       return <MapIframe />;
     default:
-        return <DataGlobe />;
+      return <DataGlobe />;
   }
-}
+};
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App" style={{width:'100vw', height:'100vh', backgroundColor: '#0a212e'}} >
-        <AppLayout {...this.props}/>
-        <VizzIcons />
-      </div>
-    );
-  }
-}
+const App = (props) => (
+  <div className="App" style={{ width: '100vw', height: '100vh', backgroundColor: '#0a212e' }}>
+    <AppLayout {...props} />
+    <VizzIcons />
+  </div>
+);
 
-export default process.env.NODE_ENV === "development" ? hot(module)(connect(mapStateToProps, null)(App)) : connect(mapStateToProps, null)(App);
+export default process.env.NODE_ENV === 'development' ? hot(module)(connect(mapStateToProps, null)(App)) : connect(mapStateToProps, null)(App);

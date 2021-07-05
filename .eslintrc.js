@@ -72,5 +72,6 @@ module.exports = {
     'import/prefer-default-export': 0,
     'import/no-unresolved': 0,
     'no-param-reassign': ['error', { props: false }],
+    'react/prop-types': 'off',
   },
 };
