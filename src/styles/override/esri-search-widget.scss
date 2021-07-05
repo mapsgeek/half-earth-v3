@@ -39,9 +39,9 @@
     padding-bottom: 20px;
     height: 50px;
 
-    .esri-icon-search::before {
-      content: url('../assets/icons/search.svg');
-    }
+    // .esri-icon-search::before {
+    //   content: url('../assets/icons/search.svg');
+    // }
   }
 
   // hides esri clean search button
@@ -109,7 +109,7 @@
       color: rgba($color: #000000, $alpha: 0); // hide original text
       
       &::before {
-        content: url('../assets/icons/location.svg');
+        // content: url('../assets/icons/location.svg');
         position: absolute;
         left: 5px;
       }

@@ -51,7 +51,7 @@ $icon-size: 25px;
 
 .icon {
   transform: rotate(180deg);
-  background-image: url('../../assets/icons/arrow_expand.svg');
+  // background-image: url('../../assets/icons/arrow_expand.svg');
   height: $icon-size;
   width: $icon-size;
 }
@@ -64,7 +64,7 @@ $icon-size: 25px;
   right: 20px;
   top: 32px;
   transform: rotate(90deg);
-  background-image: url('../../assets/icons/arrow_expand.svg');
+  // background-image: url('../../assets/icons/arrow_expand.svg');
 }
 
 .collapsedFlipToggleSwitchIcon {
