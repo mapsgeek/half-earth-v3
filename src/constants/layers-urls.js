@@ -96,7 +96,7 @@ export const LAYERS_URLS = {
   [COUNTRIES_LABELS_FEATURE_LAYER]:
     'https://services9.arcgis.com/IkktFdUAcY3WrH25/arcgis/rest/services/gadm_centroid/FeatureServer',
   [COUNTRIES_GENERALIZED_BORDERS_FEATURE_LAYER]:
-    'https://services9.arcgis.com/IkktFdUAcY3WrH25/arcgis/rest/services/gadm_generalised/FeatureServer',
+    'https://services9.arcgis.com/IkktFdUAcY3WrH25/arcgis/rest/services/generalised_nrc/FeatureServer',
   [COUNTRIES_DATA_FEATURE_LAYER]:
     'https://services9.arcgis.com/IkktFdUAcY3WrH25/arcgis/rest/services/gadm_centroid/FeatureServer',
   [LANDSCAPE_FEATURES_LABELS_LAYER]:
