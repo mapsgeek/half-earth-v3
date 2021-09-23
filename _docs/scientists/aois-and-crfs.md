@@ -187,3 +187,6 @@ return val
 ArcGIS online allows to run jupyter notebooks. There are different kinds, some cost credits, but for small tasks they are included. Users need to be provided the permissions to use the Notebooks. Once a notebook is saved as an item in the organisation it is possible to schedule tasks. Check [ESRI's documentation](https://doc.arcgis.com/en/arcgis-online/create-maps/prepare-a-notebook-for-automated-execution.htm) on how to schedule tasks.
 ## Cleaning the historic AOIs service
 [The notebook](https://eowilson.maps.arcgis.com/home/item.html?id=fa923e5d0ddd48779327fdeffc395d53#overview) saved in the organisation is ready to be activated and start the cleaning every first of the month. A version for reference can be found in the [he-scratchfolder](https://github.com/Vizzuality/he-scratchfolder/blob/master/Clean_AOI_historic_service.ipynb). The important variable to check is the limit number of features that the service shoud have: `feature_limit`. 
+
+# Precalculated data
+The process of precalculating the data can be found in this [notebook](https://github.com/Vizzuality/he-scratchfolder/blob/master/arcpyNotebooks/Precalculate_AOI_data.ipynb). Population, protection and ecosystems are in single layers whereas the human encroachment is a crf of four layers (irrigated, rainfed, rangeland, urban).
