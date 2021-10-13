@@ -32,7 +32,6 @@ const DataGlobeComponent = ({
   isGlobeUpdating,
   selectedSpecies,
   isFullscreenActive,
-  handleGlobeUpdating,
   countedActiveLayers,
   isBiodiversityActive,
   countryTooltipDisplayFor,
@@ -43,10 +42,8 @@ const DataGlobeComponent = ({
       <HalfEarthLogo className={uiStyles.halfEarthLogoTopLeft} />
       <MainMenu />
       <DataScene
-        sceneMode={sceneMode}
         userConfig={userConfig}
         countryISO={countryISO}
-        countryName={countryName}
         openedModal={openedModal}
         activeOption={activeOption}
         activeLayers={activeLayers}
@@ -61,15 +58,9 @@ const DataGlobeComponent = ({
       {isGlobeUpdating && <Spinner floating />}
       <DataGlobalSidebar
         activeLayers={activeLayers}
-        activeOption={activeOption}
-        isSidebarOpen={isSidebarOpen}
         activeCategory={activeCategory}
-        isLandscapeMode={isLandscapeMode}
-        isFullscreenActive={isFullscreenActive}
         countedActiveLayers={countedActiveLayers}
-        isBiodiversityActive={isBiodiversityActive}
-        isLandscapeSidebarCollapsed={isLandscapeSidebarCollapsed}
-        className={cx(styles.sidebarContainer, {
+        className={cx(styles.sidebarPositioning, {
           // [animationStyles.leftHidden]: sidebarHidden,
         })}
       />
