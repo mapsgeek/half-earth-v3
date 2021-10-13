@@ -1,14 +1,19 @@
 // dependencies
 import React from "react";
+import cx from "classnames";
 import loadable from "@loadable/component";
 // components
 import DataScene from "scenes/data-scene";
+import DataGlobalSidebar from "containers/sidebars/data-global-sidebar";
 import HalfEarthLogo from "components/half-earth-logo";
 import MainMenu from "components/main-menu";
 //styles
+import styles from "./styles.module.scss";
 import uiStyles from "styles/ui.module.scss";
+import animationStyles from "styles/common-animations.module.scss";
 // Dynamic imports
 const InfoModal = loadable(() => import("components/modal-metadata"));
+const Spinner = loadable(() => import("components/spinner"));
 
 const DataGlobeComponent = ({
   sceneMode,
@@ -47,17 +52,26 @@ const DataGlobeComponent = ({
         activeLayers={activeLayers}
         sceneSettings={sceneSettings}
         isSidebarOpen={isSidebarOpen}
-        isBiodiversityActive={isBiodiversityActive}
-        countedActiveLayers={countedActiveLayers}
-        activeCategory={activeCategory}
         selectedSpecies={selectedSpecies}
         isLandscapeMode={isLandscapeMode}
-        isGlobeUpdating={isGlobeUpdating}
         isFullscreenActive={isFullscreenActive}
-        handleGlobeUpdating={handleGlobeUpdating}
         countryTooltipDisplayFor={countryTooltipDisplayFor}
-        isLandscapeSidebarCollapsed={isLandscapeSidebarCollapsed}
         onMapLoad={(map) => handleMapLoad(map, activeLayers)}
+      />
+      {isGlobeUpdating && <Spinner floating />}
+      <DataGlobalSidebar
+        activeLayers={activeLayers}
+        activeOption={activeOption}
+        isSidebarOpen={isSidebarOpen}
+        activeCategory={activeCategory}
+        isLandscapeMode={isLandscapeMode}
+        isFullscreenActive={isFullscreenActive}
+        countedActiveLayers={countedActiveLayers}
+        isBiodiversityActive={isBiodiversityActive}
+        isLandscapeSidebarCollapsed={isLandscapeSidebarCollapsed}
+        className={cx(styles.sidebarContainer, {
+          // [animationStyles.leftHidden]: sidebarHidden,
+        })}
       />
       {hasMetadata && <InfoModal />}
     </>

@@ -11,6 +11,7 @@ const actions = { ...urlActions, ...sceneActions };
 const SceneContainer = (props) => {
   const {
     sceneId,
+    isMinimap,
     sceneName,
     onMapLoad,
     onViewLoad,
@@ -65,6 +66,11 @@ const SceneContainer = (props) => {
     if (map && view) {
       setLoadState('loaded');
       onViewLoad && onViewLoad(map, view);
+    }
+  }, [map, view]);
+
+  useEffect(() => {
+    if (map && view && !isMinimap) {
       setSceneMap(map);
       setSceneView(view);
     }

@@ -6,6 +6,7 @@ import { openInfoModalAnalyticsEvent } from 'actions/google-analytics-actions';
 
 import { bringLayerToFront, bringLayerToBack } from 'utils/layer-manager-utils';
 
+import mapStateToProps from './selectors';
 const actions = { ...metadataActions, openInfoModalAnalyticsEvent };
 
 const Container = (props) => {
@@ -49,4 +50,4 @@ const Container = (props) => {
   )
 }
 
-export default connect(null, actions)(Container);
+export default connect(mapStateToProps, actions)(Container);

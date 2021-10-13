@@ -12,6 +12,8 @@ import urlActions from 'actions/url-actions';
 import mapTooltipActions from 'redux_modules/map-tooltip';
 import aoisGeometriesActions from 'redux_modules/aois-geometries';
 
+import mapStateToProps from './selectors.js';
+
 const actions = { ...urlActions, ...mapTooltipActions, ...aoisGeometriesActions };
 
 
@@ -110,4 +112,4 @@ const AnalyzeAreasContainer = (props) => {
   );
 }
 
-export default connect(null, actions)(AnalyzeAreasContainer);
+export default connect(mapStateToProps, actions)(AnalyzeAreasContainer);

@@ -9,10 +9,11 @@ const MinimapWidgetComponent = ({ view: globeView, handleMapLoad }) => {
   return (
     <div className={styles.wrapper}>
       <Scene
+        isMinimap
+        spinner={false}
         sceneId={SCENE_ID}
         sceneSettings={sceneSettings}
         onViewLoad={(map, view) => handleMapLoad(map, view, globeView)}
-        spinner={false}
       />
     </div>
   );

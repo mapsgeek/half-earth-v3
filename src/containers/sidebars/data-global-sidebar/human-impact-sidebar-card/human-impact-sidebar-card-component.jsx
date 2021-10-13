@@ -15,7 +15,6 @@ import hrTheme from 'styles/themes/hr-theme.module.scss';
 const humanImpact = LAYERS_CATEGORIES.LAND_PRESSURES;
 
 const HumanImpactSidebarCardComponent = ({
-  map,
   source,
   activeLayers,
   selectedLayers,
@@ -44,7 +43,6 @@ const HumanImpactSidebarCardComponent = ({
       <div className={styles.togglesContainer}>
         {humanPressuresLandUse.map(layer => (
           <LayerToggle
-            map={map}
             option={layer}
             variant='light'
             type='checkbox'
@@ -63,7 +61,6 @@ const HumanImpactSidebarCardComponent = ({
         {humanPressuresMarine.map(layer => (
           <LayerToggle
             key={layer.value}
-            map={map}
             option={layer}
             variant='light'
             type='checkbox'

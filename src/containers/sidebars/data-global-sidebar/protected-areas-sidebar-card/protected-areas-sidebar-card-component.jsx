@@ -12,7 +12,6 @@ import { PROTECTION_SLUG } from 'constants/analyze-areas-constants';
 const protectedAreas = LAYERS_CATEGORIES.PROTECTION;
 
 const ProtectedAreasSidebarCardComponent = ({
-  map,
   source,
   activeLayers,
   handleLayerToggle,
@@ -38,7 +37,6 @@ const ProtectedAreasSidebarCardComponent = ({
         <div className={styles.togglesContainer}>
           {WDPALayers.map(layer => (
             <LayerToggle
-              map={map}
               option={layer}
               type='checkbox'
               variant='light'

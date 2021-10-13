@@ -21,7 +21,6 @@ const BiodiversitySidebarCardComponent = ({
   activeLayers,
   countedActiveLayers,
   handleLayerToggle,
-  map,
   handleTabSelection,
   selectedResolution,
   setSelectedResolution,
@@ -93,7 +92,6 @@ const BiodiversitySidebarCardComponent = ({
         <div className={styles.togglesContainer}>
           {layerTogglesToDisplay(TERRESTRIAL).map(layer => (
               <LayerToggle
-                map={map}
                 type='radio'
                 option={layer}
                 variant='light'
@@ -124,7 +122,6 @@ const BiodiversitySidebarCardComponent = ({
             <div className={styles.togglesContainer}>
               {layerTogglesToDisplay(MARINE).map(layer => (
                   <LayerToggle
-                    map={map}
                     type='radio'
                     option={layer}
                     variant='light'
