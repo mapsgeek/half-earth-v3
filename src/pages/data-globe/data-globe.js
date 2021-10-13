@@ -5,14 +5,9 @@ import { FIREFLY_BASEMAP_LAYER, SATELLITE_BASEMAP_LAYER } from 'constants/layers
 import mapStateToProps from './data-globe-selectors';
 import DataGlobeComponent from './data-globe-component.jsx';
 import { activateLayersOnLoad, setBasemap } from 'utils/layer-manager-utils';
-import * as urlActions from 'actions/url-actions';
 
-const actions = {...urlActions};
 
 const DataGlobeContainer = props => {
-
-  const { changeGlobe } = props;
-  const handleGlobeUpdating = (updating) => changeGlobe({ isGlobeUpdating: updating });
   const handleMapLoad = (map, activeLayers) => {
     setBasemap({map, layersArray: [SATELLITE_BASEMAP_LAYER, FIREFLY_BASEMAP_LAYER]});
     activateLayersOnLoad(map, activeLayers, layersConfig);
@@ -21,11 +16,10 @@ const DataGlobeContainer = props => {
   return (
     <DataGlobeComponent
       handleMapLoad={handleMapLoad}
-      handleGlobeUpdating={handleGlobeUpdating}
       {...props}
     />
   )
 }
 
 
-export default connect(mapStateToProps, actions)(DataGlobeContainer);
+export default connect(mapStateToProps, null)(DataGlobeContainer);

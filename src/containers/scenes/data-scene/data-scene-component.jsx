@@ -49,20 +49,17 @@ const CountrySceneComponent = ({
           userConfig={userConfig}
           activeLayers={activeLayers}
         />
-        <MobileOnly>
+        {/* <MobileOnly>
           <MenuFooter
             activeOption={activeOption}
             isSidebarOpen={isSidebarOpen}
             isLandscapeMode={isLandscapeMode}
           />
           <MenuSettings activeOption={activeOption} openedModal={openedModal} />
-        </MobileOnly>
+        </MobileOnly> */}
         <CountryLabelsLayer
-          // sceneMode={sceneMode}
           countryISO={countryISO}
-          countryName={countryName}
           activeLayers={activeLayers}
-          isLandscapeMode={isLandscapeMode}
         />
         {selectedAnalysisLayer && (
           <FeatureHighlightLayer
