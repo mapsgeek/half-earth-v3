@@ -8,8 +8,8 @@ import {
 
 import { BIRDS, AMPHIBIANS, MAMMALS, REPTILES } from 'constants/geo-processing-services';
 
-import { getTotalPressures, getMainPressure, roundUpPercentage } from 'utils/analyze-areas-utils';
-import { percentageFormat, localeFormatting } from 'utils/data-formatting-utils';
+import { getTotalPressures, getMainPressure } from 'utils/analyze-areas-utils';
+import { percentageFormat, localeFormatting, capPercentage, roundUpPercentage } from 'utils/data-formatting-utils';
 
 export const LAND_HUMAN_PRESSURES_SLUG = 'land-human-pressures';
 export const MARINE_HUMAN_PRESSURES_SLUG = 'marine-human-pressures';
@@ -25,6 +25,7 @@ export const AOI_LEGEND_CATEGORIES = [
 const SEARCH_SOURCES = {
   NATIONAL_BOUNDARIES: GADM_0_ADMIN_AREAS_FEATURE_LAYER,
   SUBNATIONAL_BOUNDARIES: GADM_1_ADMIN_AREAS_FEATURE_LAYER,
+  PROTECTED_AREAS: 
 }
 
 export const { NATIONAL_BOUNDARIES, SUBNATIONAL_BOUNDARIES, PROTECTED_AREAS } = SEARCH_SOURCES;
@@ -37,8 +38,6 @@ export const PRECALCULATED_AOI_OPTIONS = [
 ]
 
 export const AOIS_HISTORIC = process.env.NODE_ENV === "development" ? AOIS_HISTORIC_DEVELOPMENT : AOIS_HISTORIC_PRODUCTION;
-
-const capPercentage = (percentage) => percentage > 100 ? 100 : percentage;
 
 export const SIDEBAR_CARDS_CONFIG = {
   [SPECIES_SLUG]: {

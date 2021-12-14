@@ -62,3 +62,10 @@ export const countryChallengesSizes = (area) => {
   if (area <= 3250000) return 35;
   return 45
 }
+
+
+export const capPercentage = (percentage) => percentage > 100 ? 100 : percentage;
+
+export function roundUpPercentage(value) {
+  return value > 0.5 ? Math.round(value) : '<1';
+}

@@ -9,9 +9,6 @@ import _pick from 'lodash/pick';
 import { percentageFormat } from 'utils/data-formatting-utils';
 import { PRECALCULATED_AOI_OPTIONS } from 'constants/analyze-areas-constants';
 
-export function roundUpPercentage(value) {
-  return value > 0.5 ? Math.round(value) : '<1';
-}
 
 export function calculateGeometryArea(geometry, geometryEngine) {
   const SQ_KM_WKID = 109414;
