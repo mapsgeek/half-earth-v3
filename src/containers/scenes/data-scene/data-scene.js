@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { getSelectedAnalysisLayer } from 'utils/analyze-areas-utils';
 import MAP_TOOLTIP_CONFIG from 'constants/map-tooltip-constants';
 import Component from './data-scene-component';
+import EsriFeatureService from 'services/esri-feature-service';
+
+import { LAYERS_URLS } from 'constants/layers-urls';
 // ACTIONS
 import { AREA_OF_INTEREST } from 'router';
 import urlActions from 'actions/url-actions';
@@ -20,18 +23,24 @@ const Container = (props) => {
   const handleHighlightLayerFeatureClick = (features) => {
     if (features && features.length && selectedAnalysisLayer) {
       const tooltipConfig = MAP_TOOLTIP_CONFIG[selectedAnalysisLayer.slug];
-      const { title, subtitle, buttonText, id } = tooltipConfig;
+      const { title, subtitle, buttonText, id, dataLayer } = tooltipConfig;
       const { geometry, attributes } = features[0].graphic;
-      setBatchTooltipData({
-        isVisible: true,
-        geometry,
-        content: {
-          buttonText,
-          id: attributes[id],
-          title: attributes[title],
-          subtitle: attributes[subtitle],
-        }
-      });
+      EsriFeatureService.getFeatures({
+        url: LAYERS_URLS[dataLayer],
+        whereClause: `${id} = '${attributes[id]}'`,
+      }).then((features) => {
+        const data = features[0].attributes;
+        setBatchTooltipData({
+          isVisible: true,
+          geometry,
+          content: {
+            buttonText,
+            id: data[id],
+            title: data[title],
+            subtitle: data[subtitle],
+          }
+        });
+      })
     }
   }
 
