@@ -38,9 +38,9 @@ export const SEARCH_SOURCES = {
 export const DEFAULT_SOURCE = NATIONAL_BOUNDARIES;
 
 export const PRECALCULATED_AOI_OPTIONS = [
-  {title: SEARCH_SOURCES[NATIONAL_BOUNDARIES], slug: SEARCH_SOURCES[NATIONAL_BOUNDARIES], label: 'National boundaries'},
-  {title: SEARCH_SOURCES[SUBNATIONAL_BOUNDARIES], slug: SEARCH_SOURCES[SUBNATIONAL_BOUNDARIES], label: 'Subnational boundaries'},
-  {title: SEARCH_SOURCES[PROTECTED_AREAS], slug: SEARCH_SOURCES[PROTECTED_AREAS], label: 'Protected areas'},
+  {title: SEARCH_SOURCES[NATIONAL_BOUNDARIES], slug: NATIONAL_BOUNDARIES, label: 'National boundaries'},
+  {title: SEARCH_SOURCES[SUBNATIONAL_BOUNDARIES], slug: SUBNATIONAL_BOUNDARIES, label: 'Subnational boundaries'},
+  {title: SEARCH_SOURCES[PROTECTED_AREAS], slug: PROTECTED_AREAS, label: 'Protected areas'},
 ]
 
 export const PRECALCULATED_LAYERS_CONFIG = {
