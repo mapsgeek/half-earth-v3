@@ -1,9 +1,11 @@
 import React from 'react';
 import {
-  GADM_0_ADMIN_AREAS_FEATURE_LAYER,
-  GADM_1_ADMIN_AREAS_FEATURE_LAYER,
+  WDPA_OECM_FEATURE_LAYER,
   AOIS_HISTORIC_PRODUCTION,
   AOIS_HISTORIC_DEVELOPMENT,
+  WDPA_PRECALCULATED_DATA_TABLE,
+  GADM_0_ADMIN_AREAS_FEATURE_LAYER,
+  GADM_1_ADMIN_AREAS_FEATURE_LAYER,
 } from 'constants/layers-slugs';
 
 import { BIRDS, AMPHIBIANS, MAMMALS, REPTILES } from 'constants/geo-processing-services';
@@ -16,26 +18,50 @@ export const MARINE_HUMAN_PRESSURES_SLUG = 'marine-human-pressures';
 export const BIODIVERSITY_SLUG = 'biodiversity';
 export const PROTECTION_SLUG = 'protected-areas';
 export const SPECIES_SLUG = 'species';
+export const PROTECTED_AREAS = 'protected-areas';
+export const NATIONAL_BOUNDARIES = 'national-boundaries';
+export const SUBNATIONAL_BOUNDARIES = 'subnational-boundaries';
 
 export const AOI_LEGEND_CATEGORIES = [
   LAND_HUMAN_PRESSURES_SLUG,
   BIODIVERSITY_SLUG
 ]
 
-const SEARCH_SOURCES = {
-  NATIONAL_BOUNDARIES: GADM_0_ADMIN_AREAS_FEATURE_LAYER,
-  SUBNATIONAL_BOUNDARIES: GADM_1_ADMIN_AREAS_FEATURE_LAYER,
-  PROTECTED_AREAS: 
+export const SEARCH_SOURCES = {
+  [NATIONAL_BOUNDARIES]: GADM_0_ADMIN_AREAS_FEATURE_LAYER,
+  [SUBNATIONAL_BOUNDARIES]: GADM_1_ADMIN_AREAS_FEATURE_LAYER,
+  [PROTECTED_AREAS]: WDPA_OECM_FEATURE_LAYER
 }
 
-export const { NATIONAL_BOUNDARIES, SUBNATIONAL_BOUNDARIES, PROTECTED_AREAS } = SEARCH_SOURCES;
+//export const { NATIONAL_BOUNDARIES, SUBNATIONAL_BOUNDARIES, PROTECTED_AREAS } = SEARCH_SOURCES;
 
 export const DEFAULT_SOURCE = NATIONAL_BOUNDARIES;
 
 export const PRECALCULATED_AOI_OPTIONS = [
-  {title: NATIONAL_BOUNDARIES, slug: NATIONAL_BOUNDARIES, label: 'National boundaries'},
-  {title: SUBNATIONAL_BOUNDARIES, slug: SUBNATIONAL_BOUNDARIES, label: 'Subnational boundaries'},
+  {title: SEARCH_SOURCES[NATIONAL_BOUNDARIES], slug: SEARCH_SOURCES[NATIONAL_BOUNDARIES], label: 'National boundaries'},
+  {title: SEARCH_SOURCES[SUBNATIONAL_BOUNDARIES], slug: SEARCH_SOURCES[SUBNATIONAL_BOUNDARIES], label: 'Subnational boundaries'},
+  {title: SEARCH_SOURCES[PROTECTED_AREAS], slug: SEARCH_SOURCES[PROTECTED_AREAS], label: 'Protected areas'},
 ]
+
+export const PRECALCULATED_LAYERS_CONFIG = {
+  [NATIONAL_BOUNDARIES] : {
+    name: 'NAME_0',
+    dataLayer: GADM_0_ADMIN_AREAS_FEATURE_LAYER,
+    displayLayer: GADM_0_ADMIN_AREAS_FEATURE_LAYER,
+  },
+  [SUBNATIONAL_BOUNDARIES] : {
+    name: 'NAME_1',
+    subtitle: 'GID_0',
+    dataLayer: GADM_1_ADMIN_AREAS_FEATURE_LAYER,
+    displayLayer: GADM_1_ADMIN_AREAS_FEATURE_LAYER,
+  },
+  [PROTECTED_AREAS] : {
+    name: 'NAME',
+    subtitle: 'ISO3',
+    displayLayer: WDPA_OECM_FEATURE_LAYER,
+    dataLayer: WDPA_PRECALCULATED_DATA_TABLE
+  }
+}
 
 export const AOIS_HISTORIC = process.env.NODE_ENV === "development" ? AOIS_HISTORIC_DEVELOPMENT : AOIS_HISTORIC_PRODUCTION;
 
@@ -83,16 +109,6 @@ export const IUCN_CATEGORIES = {
   LC: 'Least concern',
   DD: 'Data deficient',
   NE: 'Not evaluated',
-}
-
-export const PRECALCULATED_LAYERS_CONFIG = {
-  [GADM_0_ADMIN_AREAS_FEATURE_LAYER] : {
-    name: 'NAME_0',
-  },
-  [GADM_1_ADMIN_AREAS_FEATURE_LAYER] : {
-    name: 'NAME_1',
-    subtitle: 'GID_0'
-  }
 }
 
 export const HIGHER_AREA_SIZE_LIMIT = 35000;

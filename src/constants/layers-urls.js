@@ -77,7 +77,7 @@ import {
   WDPA_OECM_FEATURE_LAYER,
   GADM_0_ADMIN_AREAS_FEATURE_LAYER,
   GADM_1_ADMIN_AREAS_FEATURE_LAYER,
-  ADMIN_AREAS_VECTOR_TILE_LAYER,
+  WDPA_PRECALCULATED_DATA_TABLE,
   AOIS_HISTORIC_PRODUCTION,
   AOIS_HISTORIC_DEVELOPMENT,
   ELU_LOOKUP_TABLE,
@@ -220,8 +220,9 @@ export const LAYERS_URLS = {
    // AOIs precalculated layers
    [GADM_0_ADMIN_AREAS_FEATURE_LAYER]: 'https://utility.arcgis.com/usrsvcs/servers/ec84dbba085342e081dd44b5f94bc398/rest/services/all_precalc_gadm0/FeatureServer/0',
    [GADM_1_ADMIN_AREAS_FEATURE_LAYER]: 'https://utility.arcgis.com/usrsvcs/servers/4870a51b17f841c38793b3c0a3f053c9/rest/services/gadm1_precalculated/FeatureServer/0',
-  //  [GADM_1_ADMIN_AREAS_FEATURE_LAYER]: 'https://services9.arcgis.com/IkktFdUAcY3WrH25/arcgis/rest/services/gadm36_level1_Simplify_precalculated_crfs/FeatureServer/0',
-   [WDPA_OECM_FEATURE_LAYER]: 'https://services9.arcgis.com/IkktFdUAcY3WrH25/arcgis/rest/services/WDPA%20with%20OECMs%20June%202021/FeatureServer',
+   [WDPA_OECM_FEATURE_LAYER]: 'https://utility.arcgis.com/usrsvcs/servers/d6dd590bd6734f90a626a1dc156f4546/rest/services/all_precalc_wdpa_only_geom/FeatureServer/0',
+   // AOIs precalculated table data
+   [WDPA_PRECALCULATED_DATA_TABLE]: 'https://utility.arcgis.com/usrsvcs/servers/051ba1f3714748bfb4c725d29b938e20/rest/services/all_precalc_wdpa_no_geom/FeatureServer/0'
   
   
 };
