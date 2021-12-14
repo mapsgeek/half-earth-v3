@@ -9,15 +9,6 @@ import _pick from 'lodash/pick';
 import { percentageFormat } from 'utils/data-formatting-utils';
 import { PRECALCULATED_AOI_OPTIONS } from 'constants/analyze-areas-constants';
 
-export function logGeometryArea(geometry) {
-  loadModules(["esri/geometry/geometryEngine"])
-    .then(([geometryEngine]) => {
-      const SQ_KM_WKID = 109414;
-      const area = geometryEngine.geodesicArea(geometry, SQ_KM_WKID);
-      console.log('AREA', area, 'KM2')
-    })
-}
-
 export function roundUpPercentage(value) {
   return value > 0.5 ? Math.round(value) : '<1';
 }
