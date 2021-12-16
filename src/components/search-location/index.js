@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import Component from './component.jsx';
+import EsriFeatureService from 'services/esri-feature-service';
+
+import { LAYERS_URLS } from 'constants/layers-urls';
 import MAP_TOOLTIP_CONFIG from 'constants/map-tooltip-constants';
 import { SEARCH_SOURCES_CONFIG } from 'constants/search-location-constants';
 import mapTooltipActions from 'redux_modules/map-tooltip';
@@ -25,18 +28,26 @@ const SearchLocationContainer = (props) => {
   const browseSelectedFeature = ({result}) => {
     const { setBatchTooltipData } = props;
     const tooltipConfig = MAP_TOOLTIP_CONFIG[searchSourceLayerSlug];
-      const { title, subtitle, buttonText, id } = tooltipConfig;
-      const { geometry, attributes } = result.feature;
-      setBatchTooltipData({
-        isVisible: true,
-        geometry,
-        content: {
-          buttonText,
-          id: attributes[id],
-          title: attributes[title],
-          subtitle: attributes[subtitle],
-        }
-      });
+    const { title, subtitle, buttonText, id, dataLayer } = tooltipConfig;
+    console.log('TOOLTIP CONFIG', tooltipConfig)
+    const { geometry, attributes } = result.feature;
+      EsriFeatureService.getFeatures({
+        url: LAYERS_URLS[dataLayer],
+        whereClause: `${id} = '${attributes[id]}'`,
+      }).then((features) => {
+        console.log('FEATURES AFTER SEARCH',features)
+        const data = features[0].attributes;
+        setBatchTooltipData({
+          isVisible: true,
+          geometry,
+          content: {
+            buttonText,
+            id: data[id],
+            title: data[title],
+            subtitle: data[subtitle],
+          }
+        });
+      })
   }
 
   const getSearchResults = (e) => {
@@ -50,18 +61,18 @@ const SearchLocationContainer = (props) => {
   useEffect(() => {
     const config = SEARCH_SOURCES_CONFIG[searchSourceLayerSlug];
     const { url, title, outFields, searchFields, suggestionTemplate } = config;
-      setSearchWidgetConfig({
-        searchResultsCallback: getSearchResults,
-        postSearchCallback: browseSelectedFeature,
-        searchSources: (FeatureLayer) => {
-          return [{
-            outFields,
-            searchFields,
-            suggestionTemplate,
-            layer: new FeatureLayer({ url, title, outFields }),
-          }]
-        }
-      })
+    setSearchWidgetConfig({
+      searchResultsCallback: getSearchResults,
+      postSearchCallback: browseSelectedFeature,
+      searchSources: (FeatureLayer) => {
+        return [{
+          outFields,
+          searchFields,
+          suggestionTemplate,
+          layer: new FeatureLayer({ url, title, outFields }),
+        }]
+      }
+    })
   }, [])
 
   const { updateSources, handleOpenSearch, handleSearchInputChange, handleSearchSuggestionClick } = useSearchWidgetLogic(view, () => {}, searchWidgetConfig);
