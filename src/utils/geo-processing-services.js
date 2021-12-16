@@ -14,6 +14,7 @@ import {
   HUMAN_PRESSURES,
   ECOLOGICAL_LAND_UNITS,
   CONTEXTUAL_DATA_TABLES,
+  PROTECTED_AREA_PERCENTAGE,
 } from 'constants/geo-processing-services';
 
 
@@ -66,6 +67,11 @@ function getAreaPressures(data) {
 }
 
 const getAreaPopulation = (data) => data[CONTEXTUAL_DATA_TABLES[POPULATION]].value.features[0].attributes.SUM;
+const getProtectionPercentage = (data) => {
+  const feature = data[CONTEXTUAL_DATA_TABLES[PROTECTED_AREA_PERCENTAGE]].value.features[0];
+  if (!feature) return 0;
+  return feature.attributes.percentage_protected *100;
+}
 
 const getProtectedAreasList = (data) => (
   data[CONTEXTUAL_DATA_TABLES[WDPA_LIST]].value.features.map(f => ({
@@ -82,15 +88,18 @@ const getProtectedAreasList = (data) => (
 export function getContextData(geometry) {
   return new Promise((resolve, reject) => {
     getContextualData(geometry).then(async data => {
+      console.log('DATA', data)
       const pressures = getAreaPressures(data);
       const population = getAreaPopulation(data);
       const elu = await getEluData(data);
       const protectedAreasList = getProtectedAreasList(data);
+      const percentageProtected = getProtectionPercentage(data)
       resolve({
         elu,
         pressures,
         population,
-        protectedAreasList
+        protectedAreasList,
+        percentageProtected,
       });
     }).catch((error) => {
       reject(error)
