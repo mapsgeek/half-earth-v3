@@ -117,7 +117,7 @@ const AnalyzeAreasContainer = (props) => {
   }
 
   const handleLayerToggle = (option) => {
-    batchToggleLayers([selectedOption.slug, option.slug], activeLayers, changeGlobe)
+    batchToggleLayers([selectedOption.title, option.title], activeLayers, changeGlobe)
   }
   
 

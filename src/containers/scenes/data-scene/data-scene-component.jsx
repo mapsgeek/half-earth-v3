@@ -94,7 +94,7 @@ const CountrySceneComponent = ({
         {selectedAnalysisLayer && (
           <FeatureHighlightLayer
             isLandscapeMode={isLandscapeMode}
-            featureLayerSlug={selectedAnalysisLayer.slug}
+            featureLayerSlug={selectedAnalysisLayer.title}
             onFeatureClick={handleHighlightLayerFeatureClick}
           />
         )}
