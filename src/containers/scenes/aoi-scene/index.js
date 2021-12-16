@@ -9,6 +9,8 @@ import aoisGeometriesActions from 'redux_modules/aois-geometries';
 import { activateLayersOnLoad, setBasemap } from 'utils/layer-manager-utils';
 import { layersConfig } from 'constants/mol-layers-configs';
 import { FIREFLY_BASEMAP_LAYER, SATELLITE_BASEMAP_LAYER } from 'constants/layers-slugs';
+import { PRECALCULATED_LAYERS_CONFIG } from 'constants/analyze-areas-constants';
+
 import {
   fetchDataAndUpdateForageItem,
   writeToForageItem
@@ -25,6 +27,7 @@ import {
   getPrecalculatedSpeciesData,
   getPrecalculatedContextualData,
 } from 'utils/geo-processing-services';
+
 import {
   BIRDS,
   MAMMALS,
@@ -62,19 +65,29 @@ const Container = props => {
 
   useEffect(() => {
     if (precalculatedLayerSlug && geometryEngine) {
+      const { dataLayer, displayLayer } = PRECALCULATED_LAYERS_CONFIG[precalculatedLayerSlug];
+      // We get here the geometry of the AOI
       EsriFeatureService.getFeatures({
-        url: LAYERS_URLS[precalculatedLayerSlug],
+        url: LAYERS_URLS[displayLayer],
         whereClause: `MOL_ID = '${aoiId}'`,
         returnGeometry: true
       }).then((features) => {
-        const { geometry, attributes } = features[0];
+        const { geometry } = features[0];
         setGeometry(geometry);
+      });
+      // We get here the attributes from the data table
+      EsriFeatureService.getFeatures({
+        url: LAYERS_URLS[dataLayer],
+        whereClause: `MOL_ID = '${aoiId}'`,
+        returnGeometry: true
+      }).then((features) => {
+        const { attributes } = features[0];
         setContextualData(getPrecalculatedContextualData(attributes, precalculatedLayerSlug))
         getPrecalculatedSpeciesData(BIRDS, attributes.birds).then(data => setTaxaData(data));
         getPrecalculatedSpeciesData(MAMMALS, attributes.mammals).then(data => setTaxaData(data));
         getPrecalculatedSpeciesData(REPTILES, attributes.reptiles).then(data => setTaxaData(data));
         getPrecalculatedSpeciesData(AMPHIBIANS, attributes.amphibians).then(data => setTaxaData(data));
-      })
+      });
     }
   }, [precalculatedLayerSlug, geometryEngine])
 
