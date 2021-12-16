@@ -55,6 +55,7 @@ export const useSearchWidgetLogic = (view, searchTermsAnalyticsEvent, searchWidg
     }
   };
 
+
   const updateSources = (searchSourcesFunction) => {
     if (searchWidget) {
       const {FeatureLayer, Locator} = esriConstructors;
@@ -84,13 +85,6 @@ export const useSearchWidgetLogic = (view, searchTermsAnalyticsEvent, searchWidg
       searchWidget.on('select-result', postSearchCallback);
     }
   }, [searchWidget]);
-
-  useEffect(() => {
-    if(searchWidget) {
-      searchWidget.on('suggest-complete', searchResultsCallback);
-      searchWidget.on('select-result', postSearchCallback);
-    }
-  }, [searchWidgetConfig]);
 
   return {
     updateSources,

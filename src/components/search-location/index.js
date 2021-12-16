@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import Component from './component.jsx';
 import EsriFeatureService from 'services/esri-feature-service';
@@ -12,6 +12,7 @@ import { useSearchWidgetLogic } from 'hooks/esri';
 const actions = {...mapTooltipActions };
 const SearchLocationContainer = (props) => {
   const { view, searchSourceLayerSlug } = props;
+  const searchSourceRef = useRef(searchSourceLayerSlug);
   const [searchResults, setSearchResults] = useState(false);
   const [searchWidgetConfig, setSearchWidgetConfig] = useState({});
   const [isSearchResultVisible, setIsSearchResultsVisible] = useState(false);
@@ -27,15 +28,13 @@ const SearchLocationContainer = (props) => {
 
   const browseSelectedFeature = ({result}) => {
     const { setBatchTooltipData } = props;
-    const tooltipConfig = MAP_TOOLTIP_CONFIG[searchSourceLayerSlug];
+    const tooltipConfig = MAP_TOOLTIP_CONFIG[searchSourceRef.current];
     const { title, subtitle, buttonText, id, dataLayer } = tooltipConfig;
-    console.log('TOOLTIP CONFIG', tooltipConfig)
     const { geometry, attributes } = result.feature;
       EsriFeatureService.getFeatures({
         url: LAYERS_URLS[dataLayer],
         whereClause: `${id} = '${attributes[id]}'`,
       }).then((features) => {
-        console.log('FEATURES AFTER SEARCH',features)
         const data = features[0].attributes;
         setBatchTooltipData({
           isVisible: true,
@@ -88,6 +87,7 @@ const SearchLocationContainer = (props) => {
         layer: new FeatureLayer({ url, title, outFields }),
       }]
     })
+    searchSourceRef.current = searchSourceLayerSlug;
   }, [searchSourceLayerSlug])
 
   const onOptionSelection = (selectedOption) => {
