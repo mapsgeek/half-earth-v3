@@ -27,23 +27,26 @@ const SearchLocationContainer = (props) => {
 
 
   const browseSelectedFeature = ({result}) => {
+    console.log('RESULT', result)
     const { setBatchTooltipData } = props;
+    const searchConfig = SEARCH_SOURCES_CONFIG[searchSourceRef.current]
     const tooltipConfig = MAP_TOOLTIP_CONFIG[searchSourceRef.current];
-    const { title, subtitle, buttonText, id, dataLayer } = tooltipConfig;
-    const { geometry, attributes } = result.feature;
+    const { title, subtitle, buttonText, id } = tooltipConfig;
+    const { attributes } = result.feature;
+    console.log('RESULT', tooltipConfig)
       EsriFeatureService.getFeatures({
-        url: LAYERS_URLS[dataLayer],
+        url: LAYERS_URLS[searchConfig.geometriesLayer],
         whereClause: `${id} = '${attributes[id]}'`,
       }).then((features) => {
-        const data = features[0].attributes;
+        const geometry = features[0].geometry;
         setBatchTooltipData({
           isVisible: true,
           geometry,
           content: {
             buttonText,
-            id: data[id],
-            title: data[title],
-            subtitle: data[subtitle],
+            id: attributes[id],
+            title: attributes[title],
+            subtitle: attributes[subtitle],
           }
         });
       })
@@ -77,7 +80,9 @@ const SearchLocationContainer = (props) => {
   const { updateSources, handleOpenSearch, handleSearchInputChange, handleSearchSuggestionClick } = useSearchWidgetLogic(view, () => {}, searchWidgetConfig);
   
   useEffect(() => {
+    console.log('UPDATING SOURCES TO', searchSourceLayerSlug)
     const config = SEARCH_SOURCES_CONFIG[searchSourceLayerSlug];
+    console.log(config)
     const { url, title, outFields, searchFields, suggestionTemplate } = config;
     updateSources((FeatureLayer) => {
       return [{
