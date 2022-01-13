@@ -33,6 +33,8 @@ export const useSearchWidgetLogic = (view, searchTermsAnalyticsEvent, searchWidg
   const { searchSources, postSearchCallback, searchResultsCallback} = searchWidgetConfig || {};
   const [esriConstructors, setEsriConstructors] = useState();
 
+  console.log('searchSources', searchSources);
+
   useEffect(() => {
     loadModules(["esri/widgets/Search", "esri/layers/FeatureLayer", "esri/tasks/Locator"])
       .then(([Search, FeatureLayer, Locator]) => {
@@ -118,7 +120,7 @@ export const useSketchWidget = (view, sketchWidgetConfig = {}) => {
     })
   }, [])
 
-  
+
   const handleSketchToolActivation = () => {
     loadModules(["esri/widgets/Sketch",  "esri/widgets/Sketch/SketchViewModel","esri/layers/GraphicsLayer"]).then(([Sketch, SketchViewModel, GraphicsLayer]) => {
       const _sketchLayer = new GraphicsLayer({ elevationInfo: { mode: 'on-the-ground' } });
@@ -137,7 +139,7 @@ export const useSketchWidget = (view, sketchWidgetConfig = {}) => {
         //   view: view,
         //   layer:_sketchLayer,
         //   polygonSymbol: {
-        //     type: "simple-fill", 
+        //     type: "simple-fill",
         //     color: [147, 255, 95, 0.2]
         //   }
         // })

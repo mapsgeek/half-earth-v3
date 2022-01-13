@@ -41,7 +41,8 @@ const AnalyzeAreasCardComponent = ({
     }
     setAoiHistoryModalOpen(!isAoiHistoryModalOpen);
   }
-  
+  console.log('selectedOption', selectedOption);
+
   return (
     <div className={cx(
       styles.sidebarCardContainer,
@@ -97,7 +98,7 @@ const AnalyzeAreasCardComponent = ({
                 searchSourceLayerSlug={selectedOption.slug}
               />
             </div>
-            <Button 
+            <Button
               type="compound"
               Icon={AreasHistoryIcon}
               label="Open your analyzed areas history"
@@ -111,7 +112,7 @@ const AnalyzeAreasCardComponent = ({
           <section className={styles.sectionContainer}>
             <div className={cx(
               styles.sizeWarningContainer,
-              {[styles.active]: geometryArea > HIGHER_AREA_SIZE_LIMIT} 
+              {[styles.active]: geometryArea > HIGHER_AREA_SIZE_LIMIT}
             )}>
               <InfoIcon className={styles.info}/>
               <span className={styles.warning}>Draw or upload a shape smaller than <b>{localeFormatting(HIGHER_AREA_SIZE_LIMIT)}km<sup>2</sup></b>.</span>
@@ -128,7 +129,7 @@ const AnalyzeAreasCardComponent = ({
               onSuccess={onShapeUploadSuccess}
               onError={onShapeUploadError}
             />
-            <Button 
+            <Button
               type="compound"
               Icon={AreasHistoryIcon}
               label="Open your analyzed areas history"

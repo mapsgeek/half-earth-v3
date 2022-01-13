@@ -21,13 +21,17 @@ import aoisGeometriesActions from 'redux_modules/aois-geometries';
 import aoisActions from 'redux_modules/aois';
 import { loadModules } from 'esri-loader';
 
+// local
 import Component from './component.jsx';
+import mapStateToProps from './selectors';
 
 const actions = { ...urlActions, ...mapTooltipActions, ...aoisGeometriesActions, ...aoiAnalyticsActions, ...aoisActions };
 
 const AnalyzeAreasContainer = (props) => {
-  const { browsePage, view, activeLayers, changeGlobe, setTooltipIsVisible, setAoiGeometry, setSubnationalSelected } = props;
-  const [selectedOption, setSelectedOption] = useState(PRECALCULATED_AOI_OPTIONS[0]);
+  const { browsePage, view, activeLayers, changeGlobe, setTooltipIsVisible, setAoiGeometry, setSubnationalSelected, subnationalSelected } = props;
+  console.log('subnationalSelected', subnationalSelected);
+
+  const [selectedOption, setSelectedOption] = useState(PRECALCULATED_AOI_OPTIONS[subnationalSelected ? 1 : 0]);
   const [selectedAnalysisTab, setSelectedAnalysisTab] = useState('click');
   const [isPromptModalOpen, setPromptModalOpen] = useState(false);
   const [promptModalContent, setPromptModalContent] = useState({
@@ -128,7 +132,6 @@ const AnalyzeAreasContainer = (props) => {
     batchToggleLayers([selectedOption.slug, option.slug], activeLayers, changeGlobe)
   }
 
-
   const handlePromptModalToggle = () => setPromptModalOpen(!isPromptModalOpen);
 
   const handleDrawClick = () => {
@@ -158,4 +161,4 @@ const AnalyzeAreasContainer = (props) => {
   );
 }
 
-export default connect(null, actions)(AnalyzeAreasContainer);
+export default connect(mapStateToProps, actions)(AnalyzeAreasContainer);

@@ -8,6 +8,7 @@ import mapTooltipActions from 'redux_modules/map-tooltip';
 import { useSearchWidgetLogic } from 'hooks/esri';
 const actions = {...mapTooltipActions };
 const SearchLocationContainer = (props) => {
+  console.log('props', props);
   const { view, searchSourceLayerSlug } = props;
   const [searchResults, setSearchResults] = useState(false);
   const [searchWidgetConfig, setSearchWidgetConfig] = useState({});
