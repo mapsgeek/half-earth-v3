@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import cx from 'classnames';
 
 // components
 import SpeciesBar from 'components/charts/species-bar';
@@ -28,27 +29,47 @@ import { ReactComponent as WarningIcon } from 'icons/warning.svg';
 import styles from './styles.module.scss';
 
 const capPercentage = (percentage) => (percentage > 100 ? 100 : percentage);
+const getPositionClass = (i) =>
+  ({
+    0: 'prev',
+    1: 'selected',
+    2: 'next',
+  }[i]);
 
 const Component = ({
   area,
   speciesData,
   speciesFilters,
-  placeholderText,
   setSpeciesFilter,
   selectedSpeciesFilter,
   individualSpeciesData,
-  handleNextSpeciesSelection,
-  handlePreviousSpeciesSelection,
-  previousImage,
-  nextImage,
+  displayImages,
   showCarouselArrows,
   handleSpeciesSearch,
+  handleSpeciesChange,
   handleSearchOptionSelected,
   handleCloseSearch,
   selectedSearchOption,
   searchOptions,
-}) =>
-  speciesData.species.length === 0 ? (
+}) => {
+  const [moving, setMoving] = useState(0);
+  console.log('displayImages', displayImages);
+  useEffect(() => {
+    let intervalMoving;
+    if (moving) {
+      intervalMoving = () =>
+        setTimeout(() => {
+          console.log('removing');
+          setMoving(0);
+          handleSpeciesChange(1);
+          // setImages(shift(displayImages, moving, 1));
+        }, 500);
+      intervalMoving();
+    }
+    return intervalMoving;
+  }, [moving]);
+
+  return speciesData.species.length === 0 ? (
     <section className={styles.loaderCard}>
       <div className={styles.loaderBarContainer}>
         <div className={styles.loaderBarPercentage} />
@@ -95,42 +116,36 @@ const Component = ({
           <section className={styles.speciesDataContainer}>
             <div>
               <div className={styles.speciesCarousel}>
-                {previousImage && (
+                {displayImages.map((image, index) => (
                   <div
-                    className={`${styles.previousSpeciesImageWrapper} ${styles.speciesImageWrapper}`}
-                    onClick={handlePreviousSpeciesSelection}
-                    style={{
-                      backgroundImage: `url(${previousImage})`,
+                    key={image.image + index}
+                    className={cx(
+                      styles.speciesImageWrapper,
+                      getPositionClass(index),
+                      { [styles[`moving${moving}`]]: moving }
+                    )}
+                    onClick={() => {
+                      setMoving(1);
+                      // image.onClick();
                     }}
-                  />
-                )}
-                <div
-                  className={`${styles.selectedSpeciesImageWrapper} ${styles.speciesImageWrapper}`}
-                  style={{
-                    backgroundImage: `url(${individualSpeciesData.imageUrl})`,
-                  }}
-                >
-                  {placeholderText && (
-                    <span className={styles.placeholderText}>
-                      {placeholderText}
-                    </span>
-                  )}
-                </div>
-                {nextImage && (
-                  <div
-                    className={`${styles.nextSpeciesImageWrapper} ${styles.speciesImageWrapper}`}
-                    onClick={handleNextSpeciesSelection}
                     style={{
-                      backgroundImage: `url(${nextImage})`,
+                      backgroundImage: `url(${image.image})`,
                     }}
-                  />
-                )}
+                  >
+                    {getPositionClass(index) === 'selected' &&
+                      image.placeholderText && (
+                        <span className={styles.placeholderText}>
+                          {image.placeholderText}
+                        </span>
+                      )}
+                  </div>
+                ))}
               </div>
               <div className={styles.sliderControls}>
                 {showCarouselArrows && (
                   <div
                     className={styles.arrow_icon_container}
-                    onClick={handlePreviousSpeciesSelection}
+                    onClick={displayImages[0] && handleSpeciesChange(-1)}
                   >
                     <ArrowIconLeft className={styles.arrow_icon} />
                   </div>
@@ -151,7 +166,7 @@ const Component = ({
                 {showCarouselArrows && (
                   <div
                     className={styles.arrow_icon_container}
-                    onClick={handleNextSpeciesSelection}
+                    onClick={displayImages[2] && handleSpeciesChange(1)}
                   >
                     <ArrowIconRight className={styles.arrow_icon} />
                   </div>
@@ -197,5 +212,6 @@ const Component = ({
       )}
     </SidebarCardWrapper>
   );
+};
 
 export default Component;

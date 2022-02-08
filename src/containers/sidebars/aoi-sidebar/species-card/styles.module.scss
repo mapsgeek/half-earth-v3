@@ -105,31 +105,6 @@
   align-items: center;
   height: 230px;
 
-  .previousSpeciesImageWrapper {
-    position: absolute;
-    top: 0px;
-    left: -45px;
-    height: 170px;
-    margin-top: $site-gutter * 2;
-    cursor: pointer;
-  }
-
-  .nextSpeciesImageWrapper {
-    position: absolute;
-    top: 0px;
-    right: -45px;
-    height: 170px;
-    margin-top: $site-gutter * 2;
-    cursor: pointer;
-  }
-
-  .selectedSpeciesImageWrapper {
-    position: absolute;
-    margin-top: $site-gutter;
-    height: 210px;
-    z-index: 1;
-    background-size:auto 90%;
-  }
 
   .speciesImageWrapper {
     display: flex;
@@ -141,6 +116,69 @@
     background-position: center;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.15);
     background-color: white;
+    height: 170px;
+    transition: all 0.5s;
+
+    &.prev {
+      position: absolute;
+      top: 0px;
+      left: -45px;
+      height: 170px;
+      margin-top: $site-gutter * 2;
+      cursor: pointer;
+      z-index: 1;
+
+      &.moving1 {
+        height: 200px;
+        z-index: 2;
+      }
+
+      &.moving-1 {
+        z-index: 0;
+        transform: translateX(300px);
+      }
+    }
+
+    &.next {
+      position: absolute;
+      top: 0px;
+      right: -45px;
+      height: 170px;
+      margin-top: $site-gutter * 2;
+      cursor: pointer;
+        z-index: 0;
+
+      &.moving1 {
+        transform: translateX(-350px);
+      }
+
+      &.moving-1 {
+        height: 210px;
+        z-index: 2;
+      }
+    }
+
+    &.selected {
+      position: absolute;
+      margin-top: $site-gutter;
+      height: 210px;
+      z-index: 1;
+      background-size:auto 90%;
+      z-index: 2;
+
+      &.moving1,
+      &.moving-1 {
+        height: 170px;
+      }
+    }
+
+    &.moving1 {
+      transform: translateX(150px);
+    }
+
+    &.moving-1 {
+      transform: translateX(-150px);
+    }
 
     .placeholderText {
       @extend %title;

@@ -29,9 +29,9 @@ const SpeciesCardContainer = (props) => {
   const [speciesToDisplayBackUp, setSpeciesToDisplayBackUp] = useState(species);
   const [selectedSpecies, setSelectedSpecies] = useState(speciesToDisplay[selectedSpeciesIndex])
   const [individualSpeciesData, setIndividualSpeciesData] = useState(null)
-  // Carousel images
-  const [previousImage, setPreviousImage] = useState(null);
-  const [nextImage, setNextImage] = useState(null);
+
+  const [displayImages, setDisplayImages] = useState(null);
+  const [bufferSpeciesWithImages, setBufferSpeciesWithImages] = useState([]);
   // Search dropdown
   const [searchOptions, setSearchOptions] = useState([]);
   const [selectedSearchOption, setSelectedSearchOption] = useState(null);
@@ -100,6 +100,12 @@ const SpeciesCardContainer = (props) => {
       setSelectedSpeciesIndex(selectedSpeciesIndex - 1)
   }
 
+  // direction: 1 for right -1 for left
+  const shift = (arr, direction = 1, n = 1) => {
+    const times = n > arr.length ? n % arr.length : n;
+    return arr.concat(arr.splice(0, direction > 0 ? arr.length - times : times));
+  };
+
   useEffect(() => {
     if (selectedSearchOption === null && searchOptions && searchOptions.length > 0) {
       handleSearchOptionSelected(searchOptions[0]);
@@ -163,96 +169,63 @@ const SpeciesCardContainer = (props) => {
   }, [selectedSpeciesFilter])
 
   useEffect(() => {
-    if (selectedSpecies) {
+    if (selectedSpecies && !displayImages) {
+      // On handle change pick the next or prev 5, search and pick 3 from them
+      let bufferSpecies = speciesToDisplay.slice(0, 5);
 
-      if (speciesToDisplay.length >= 3) {
-        let previousSpeciesName, nextSpeciesName;
-
-        if (selectedSpeciesIndex === 0) {
-          previousSpeciesName = speciesToDisplay[speciesToDisplay.length - 1].name;
-          nextSpeciesName = speciesToDisplay[1].name;
-        } else if (selectedSpeciesIndex === speciesToDisplay.length - 1) {
-          previousSpeciesName = speciesToDisplay[speciesToDisplay.length - 2].name;
-          nextSpeciesName = speciesToDisplay[0].name;
-        } else {
-          previousSpeciesName = speciesToDisplay[selectedSpeciesIndex - 1].name;
-          nextSpeciesName = speciesToDisplay[selectedSpeciesIndex + 1].name;
-        }
-
-        MolService.getSpecies(previousSpeciesName)
-          .then((results) => {
-            if (results.length > 0) {
-              setPreviousImage(results[0].image ? results[0].image.url : getPlaceholderSpeciesImage(results[0].taxa));
-            } else {
-              setPreviousImage(DEFAULT_PLACEHOLDER_IMAGE);
-            }
-          });
-        MolService.getSpecies(nextSpeciesName)
-          .then((results) => {
-            if (results.length > 0) {
-              setNextImage(results[0].image ? results[0].image.url : getPlaceholderSpeciesImage(results[0].taxa));
-            } else  {
-              setNextImage(DEFAULT_PLACEHOLDER_IMAGE);
-            }
-          });
-
-      } else if (speciesToDisplay.length === 2) {
-        let nextSpeciesName;
-
-        if (selectedSpeciesIndex === 0) {
-          nextSpeciesName = speciesToDisplay[1].name;
-        } else if (selectedSpeciesIndex === 1) {
-          nextSpeciesName = speciesToDisplay[0].name;
-        }
-
-        MolService.getSpecies(nextSpeciesName)
-          .then((results) => {
-            if (results.length > 0) {
-              setNextImage(results[0].image ? results[0].image.url : getPlaceholderSpeciesImage(results[0].taxa));
-            } else {
-              setNextImage(DEFAULT_PLACEHOLDER_IMAGE);
-            }
-          });
-        setPreviousImage(null);
-      } else {
-        setPreviousImage(null);
-        setNextImage(null);
+      if (bufferSpecies.length > 3) {
+        bufferSpecies = shift(bufferSpecies);
       }
 
-      MolService.getSpecies(selectedSpecies.name).then((results) => {
-        if (results.length > 0) {
-          setIndividualSpeciesData({
-            ...selectedSpecies,
-            commonname: results[0].commonname,
-            imageUrl: results[0].image ? results[0].image.url : getPlaceholderSpeciesImage(results[0].taxa),
-            iucnCategory: IUCN_CATEGORIES[results[0].redlist],
-            molLink: `https://mol.org/species/${selectedSpecies.name}`
-          });
-          results[0].image ? setPlaceholderText(null) : setPlaceholderText(getPlaceholderSpeciesText(results[0].taxa))
-        } else {
-          handleNextSpeciesSelection();
-        }
+      // TODO: Use Promise.all
+
+      bufferSpecies.forEach((specie, i) => {
+        if (!specie) return null;
+        MolService.getSpecies(specie.name)
+        .then((results) => {
+          const updatedBufferSpeciesWithImages = bufferSpeciesWithImages;
+          let updatedSpecie = DEFAULT_PLACEHOLDER_IMAGE;
+          if (results.length > 0) {
+            updatedSpecie = {
+              ...specie,
+              commonname: results[0].commonname,
+              imageUrl: results[0].image ? results[0].image.url : getPlaceholderSpeciesImage(results[0].taxa),
+              iucnCategory: IUCN_CATEGORIES[results[0].redlist],
+              molLink: `https://mol.org/species/${selectedSpecies.name}`,
+              placeholderText: results[0].image ? null : getPlaceholderSpeciesText(results[0].taxa)
+            }
+          }
+          updatedBufferSpeciesWithImages[i] = updatedSpecie
+          setBufferSpeciesWithImages(updatedBufferSpeciesWithImages);
+        });
       })
     }
-  }, [selectedSpecies]);
+  }, [selectedSpecies, displayImages]);
+
+  useEffect(() => {
+    if (bufferSpeciesWithImages && (!displayImages || displayImages.length === 0)) {
+      setDisplayImages(bufferSpeciesWithImages.slice(1, 4));
+    }
+  }, [bufferSpeciesWithImages, displayImages]);
+
+  const handleSpeciesChange = (direction) => {
+    console.info(direction)
+  };
 
   return (
     <Component
       speciesFilters={speciesFilters}
-      placeholderText={placeholderText}
       individualSpeciesData={individualSpeciesData}
       speciesToDisplay={speciesToDisplay}
       setSpeciesFilter={setSpeciesFilter}
       selectedSpeciesFilter={selectedSpeciesFilter}
-      previousImage={previousImage}
-      nextImage={nextImage}
-      handleNextSpeciesSelection={handleNextSpeciesSelection}
-      handlePreviousSpeciesSelection={handlePreviousSpeciesSelection}
+      displayImages={displayImages}
       showCarouselArrows={showCarouselArrows}
       searchOptions={searchOptions}
       selectedSearchOption={selectedSearchOption}
       setSearchOptions={setSelectedSearchOption}
       handleSpeciesSearch={handleSpeciesSearch}
+      handleSpeciesChange={handleSpeciesChange}
       handleSearchOptionSelected={handleSearchOptionSelected}
       handleCloseSearch={handleCloseSearch}
       {...props}
