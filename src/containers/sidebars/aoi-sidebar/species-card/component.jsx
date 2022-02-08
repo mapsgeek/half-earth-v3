@@ -53,13 +53,11 @@ const Component = ({
   searchOptions,
 }) => {
   const [moving, setMoving] = useState(0);
-  console.log('displayImages', displayImages);
   useEffect(() => {
     let intervalMoving;
     if (moving) {
       intervalMoving = () =>
         setTimeout(() => {
-          console.log('removing');
           setMoving(0);
           handleSpeciesChange(1);
           // setImages(shift(displayImages, moving, 1));
