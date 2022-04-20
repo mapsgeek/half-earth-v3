@@ -19,14 +19,16 @@ const AudioPlayer = ({
 }) => (
   <ReactPlayer
     url={[`${file}#t=${startTime},${endTime}`]}
-    volume={muted || !freeToPlay ? 0 : 1}
     playing={playing}
     wrapper={'audio'}
+    muted={muted}
     onPlay={() => setPlaying(true)}
     onEnded={() => {
       handleEndOfStep();
     }}
     onProgress={({ playedSeconds }) => {
+      setPlayedSeconds(playedSeconds);
+      setFreeToPlay(true);
       if (!freeToPlay) {
         // Only happens in this case. See waitingStartAudioClick hook comment
         const notPlayingBecauseWaitingForUserClick = playedSeconds === 0;
@@ -43,11 +45,10 @@ const AudioPlayer = ({
         if (hasNoMoreTextMarks) {
           handleEndOfStep();
         } else {
+          debugger
           setTextMark(textMark + 1);
         }
       }
-
-      setPlayedSeconds(playedSeconds);
     }}
     progressInterval={50}
     config={{
@@ -55,7 +56,7 @@ const AudioPlayer = ({
         attributes: { preload: 'auto' },
         forceAudio: true,
         autoPlay: true,
-        muted: true,
+        // muted: true,
       },
     }}
   />

@@ -70,6 +70,7 @@ const HeroComponent = ({ className, changeUI, browsePage }) => {
               changeUI({
                 onboardingType: 'priority-places',
                 onboardingStep: 0,
+                waitingInteraction: false,
               });
             }}
           />
@@ -94,6 +95,7 @@ const HeroComponent = ({ className, changeUI, browsePage }) => {
               changeUI({
                 onboardingType: 'national-report-cards',
                 onboardingStep: 0,
+                waitingInteraction: false,
               });
             }}
           />

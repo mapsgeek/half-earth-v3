@@ -7,7 +7,7 @@ import { ReactComponent as PauseIcon } from 'icons/pause.svg';
 import { ReactComponent as MuteIcon } from 'icons/mute.svg';
 import { ReactComponent as MutedIcon } from 'icons/muted.svg';
 import cx from 'classnames';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { LANDING } from 'router';
 import priorityPlaces01 from 'sounds/tour1-track1-intro.mp3';
 import priorityPlaces02 from 'sounds/tour1-track2-priority.mp3';
@@ -112,6 +112,7 @@ const ButtonIcon = ({
               className={styles.pauseButton}
               onMouseLeave={() => setPauseIcon(false)}
               onClick={() => {
+                console.log('esoy en el botón de pausa');
                 setPlaying(false);
                 setPausedTime(playedSeconds);
               }}
@@ -134,31 +135,30 @@ const SoundButtonComponent = ({
   onboardingStep,
   waitingInteraction,
 }) => {
-  const [playing, setPlaying] = useState(true);
-  const [playedSeconds, setPlayedSeconds] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const [playedSeconds, setPlayedSeconds] = useState(null);
   const [pausedTime, setPausedTime] = useState(0);
   const [muted, setMuted] = useState(false);
-
   // There is no autoplay on chrome and firefos. We always need a previous user click on the page.
   // We show a message if this hasn't happened (eg. reload)
   // https://developer.chrome.com/blog/autoplay/#webaudio
   // https://hacks.mozilla.org/2019/02/firefox-66-to-block-automatically-playing-audible-video-and-audio/
-  const [waitingStartAudioClick, setWaitingStartAudioClick] = useState(false);
-  const [freeToPlay, setFreeToPlay] = useState(false);
+  const [waitingStartAudioClick, setWaitingStartAudioClick] = useState(true);
+  const [freeToPlay, setFreeToPlay] = useState(true);
 
   const [pauseIcon, setPauseIcon] = useState(false);
 
   const [finishModal, setFinishModal] = useState(false);
   const [textMark, setTextMark] = useState(0);
 
-  const toggleMuted = () => {
-    setMuted(!muted);
-    setPausedTime(playedSeconds);
-  };
+  const toggleMuted = useCallback(() => {
+    setMuted((muted) => !muted);
+    // setPausedTime(playedSeconds);
+  }, []);
 
   const handlePlay = () => {
     setWaitingStartAudioClick(false);
-    setFreeToPlay(true);
+    // setFreeToPlay(true);
     setPlaying(true);
   };
 
@@ -209,9 +209,9 @@ const SoundButtonComponent = ({
     changeUI({ waitingInteraction: true });
   };
 
-  useEffect(() => {
-    setPlaying(!waitingInteraction);
-  }, [waitingInteraction]);
+  // useEffect(() => {
+  //   setPlaying(!waitingInteraction);
+  // }, [waitingInteraction]);
 
   if (playing && onboardingType && SCRIPTS[onboardingType] && !script) {
     handleFinishOnBoarding();
@@ -227,9 +227,8 @@ const SoundButtonComponent = ({
     if (!waitingInteraction && waitingStartAudioClick) {
       return 'Hit play when you are ready to start';
     }
-    return waitingInteraction ? (
-      <DotsIcon />
-    ) : (
+    if (waitingInteraction) return <DotsIcon />
+    return (
       <div className={styles.textContainer}>
         <button className={styles.muteButton} onClick={toggleMuted}>
           {muted ? (
@@ -240,7 +239,7 @@ const SoundButtonComponent = ({
         </button>
         {text}
       </div>
-    );
+    )
   };
 
   return (
@@ -276,7 +275,7 @@ const SoundButtonComponent = ({
               setPausedTime,
               pausedTime,
             }}
-            startTime={pausedTime || startTime}
+            startTime={startTime}
           />
           <ButtonIcon
             {...{
